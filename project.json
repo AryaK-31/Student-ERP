@@ -4,6 +4,57 @@
   "sourceRoot": "./src",
   "projectType": "application",
   "tags": [],
-  "// targets": "to see all targets run: nx show project school-erp-management --web",
-  "targets": {}
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "outputPath": "dist/web"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "school-erp-management:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "school-erp-management:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "school-erp-management:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "school-erp-management:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "school-erp-management:build:development"
+        },
+        "production": {
+          "buildTarget": "school-erp-management:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["src/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  }
 }

@@ -4,6 +4,17 @@
   "plugins": ["@nx"],
   "overrides": [
     {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parserOptions": {
+        "project": ["tsconfig.*?.json"]
+      },
+      "rules": {
+        "promise/always-return": ["error", { "ignoreLastCallback": true }],
+        "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],
+        "react/jsx-props-no-spreading": "warn"
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
       "rules": {}
@@ -14,5 +25,13 @@
       "rules": {}
     }
   ],
-  "extends": ["plugin:@nx/react"]
+  "extends": [
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:eslint-comments/recommended",
+    "plugin:promise/recommended",
+    "airbnb",
+    "airbnb/hooks",
+    "airbnb-typescript",
+    "plugin:@nx/react"
+  ]
 }

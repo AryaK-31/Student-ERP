@@ -1,14 +1,16 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable import/no-extraneous-dependencies */
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
-export default defineConfig({
+export default defineConfig(() => ({
   root: __dirname,
   cacheDir: './node_modules/.vite/.',
 
   server: {
-    port: 4200,
+    port: 2401,
     host: 'localhost',
   },
 
@@ -46,4 +48,4 @@ export default defineConfig({
       provider: 'v8',
     },
   },
-});
+}));
