@@ -1,1 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import './utils/constants/variable';
+@import './utils/constants/mixins';
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /** 
+  * Note
+  * Defined value of 1rem for responsive design
+  * 10/16 = 0.625 => 62.5%
+  * 1rem = 10px
+  **/
+  font-size: 62.5%;
+  
+  /** Refer src/utils/constants/_mixins for explaination */
+  @include respond(tab-port){
+    font-size: 56.25%; //7px
+  }
+
+  @include respond(phone){
+    font-size: 40.625%; //6.5px
+  }
+
+
+}
+
+body {
+  box-sizing: border-box;
+}

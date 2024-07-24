@@ -10,8 +10,10 @@
   },
   "private": true,
   "dependencies": {
+    "antd": "^5.19.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
     "@nx/eslint": "18.2.1",
