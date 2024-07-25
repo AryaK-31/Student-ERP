@@ -1,8 +1,9 @@
 @import '../scss/variable';
 
 .cardStyle {
-  height: 18rem;
-  background-color: #dfdfdf;
+  height: 16rem;
+  width: 35rem;
+  background-color: var(--color-primary);
   box-shadow: 0px 4px 4px 0px #00000040;
   display: flex;
   justify-content: center;

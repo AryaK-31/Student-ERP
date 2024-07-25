@@ -1,13 +1,14 @@
 @import '../scss/variable';
 
 .homeBase {
-  min-height: 100vh;
+  max-height: 100vh;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 5rem;
+  padding: 6rem;
 }
 
 .homeTitle {
