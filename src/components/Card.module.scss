@@ -1,16 +1,15 @@
-@import '../utils/constants/variable';
-@import '../utils/constants/mixins';
+@import '../scss/variable';
 
 .cardStyle {
-  height: 20rem;
-  background-color: #00000040;
+  height: 18rem;
+  background-color: #dfdfdf;
   box-shadow: 0px 4px 4px 0px #00000040;
   display: flex;
   justify-content: center;
   align-items: center;
   
   &Para{
-    font-size: $font-size-primary-large;
+    font-size: var(--font-size-primary-large);
     text-align: center;
   }
 }

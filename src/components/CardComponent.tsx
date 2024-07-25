@@ -12,13 +12,9 @@ const CardComponent: React.FC<CardComponentProps> = ({ children }) => {
   /** function provided by react-router-dom for navigating to routes without refresh */
   const navigate = useNavigate(); 
 
-  /** Navigates the page to '/dashboard' */
-  const handleClick = () => {
-    navigate('/dashboard')
-  }
-  
   return (
-    <Card onClick={handleClick} hoverable className={styles.cardStyle}>
+    /** onClick Navigates the page to '/dashboard' */
+    <Card onClick={() => navigate('/dashboard')} hoverable className={styles.cardStyle}>
       <p className={styles.cardStylePara}>{children}</p>
     </Card>
   );
