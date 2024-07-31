@@ -1,0 +1,22 @@
+@import '../scss/variable';
+
+.menu {
+  height: 8vh;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+
+  .menuItem {
+    font-size: var(--font-size-tertiary-large);
+    font-weight: 600;
+    color: var(--color-secondary);
+
+    span {
+      font-size: var(--font-size-tertiary-small);
+      font-weight: 500;
+    }
+  }
+
+  
+}
+

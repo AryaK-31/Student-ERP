@@ -1,0 +1,29 @@
+@import '../scss/variable';
+
+.leftLayout {
+  display: flex;
+  flex-direction: column;
+  width: 18%;
+  border-right: 1px solid black;
+}
+
+.header{
+  font-size: var(--font-size-tertiary-large);
+  height: 8vh;
+  font-weight: 500;
+  padding: 1rem 2rem;
+  text-align: center;
+  color: #ffffff;
+  background-color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu {
+  flex: 1;
+  font-size: var(--font-size-tertiary-small);
+  font-weight: 500;
+}
+
+.menuItem{}
