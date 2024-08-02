@@ -18,17 +18,12 @@ const items: MenuProps['items'] = allClasses.map((classType) => ({
 
 
 const Topbar: React.FC = () => {
-  const appContext = useAppContext();
-  const { currentClass, setCurrentClass } = appContext;
-
-  const handleClick: MenuProps['onClick'] = (e) => {
-    setCurrentClass(e.key);
-  };
+  const { currentClass, setCurrentClass } = useAppContext();
 
   return (
     <div className={styles.menu}>
       <Dropdown
-        menu={{ items, onClick: handleClick, selectable : true, defaultSelectedKeys : [currentClass] }}
+        menu={{ items, onClick: (e) => {setCurrentClass(e.key);}, selectable : true, defaultSelectedKeys : [currentClass] }}
         trigger={['click']}
       >
         <button type='button' className={styles.menuItem}>

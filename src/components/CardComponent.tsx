@@ -9,8 +9,7 @@ type CardComponentProps = {
 };
 
 const CardComponent: React.FC<CardComponentProps> = ({ children }) => {
-  const appContext = useAppContext();
-  const { setCurrentClass } = appContext;
+  const { setCurrentClass } = useAppContext();
 
   /** function provided by react-router-dom for navigating to routes without refresh */
   const navigate = useNavigate();

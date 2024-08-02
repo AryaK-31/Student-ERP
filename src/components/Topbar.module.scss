@@ -7,14 +7,14 @@
   align-items: center;
 
   .menuItem {
-    font-size: var(--font-size-tertiary-large);
+    font-size: 2rem;
     font-weight: 600;
     color: var(--color-secondary);
     border: 0;
     background-color: white;
 
     span {
-      font-size: var(--font-size-tertiary-small);
+      font-size: 1.1rem;
       font-weight: 500;
     }
   }

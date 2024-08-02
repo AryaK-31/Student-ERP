@@ -5,15 +5,15 @@ type AppContextType = {
   setCurrentClass: (classValue: string) => void;
 };
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType>({
+  currentClass: '4',
+  setCurrentClass: () => {},
+});
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentClass, setCurrentClass] = useState<string>('4');
 
-  const contextValue = useMemo(
-    () => ({ currentClass, setCurrentClass }),
-    [currentClass, setCurrentClass],
-  );
+  const contextValue = useMemo(() => ({ currentClass, setCurrentClass }), [currentClass]);
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
