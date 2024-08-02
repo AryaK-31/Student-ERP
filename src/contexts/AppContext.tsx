@@ -2,7 +2,7 @@ import React, { createContext, ReactNode, useContext, useState, useMemo } from '
 
 type AppContextType = {
   currentClass: string;
-  setCurrentClass: (classValue: string) => void;
+  setCurrentClass: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -15,7 +15,11 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const contextValue = useMemo(() => ({ currentClass, setCurrentClass }), [currentClass]);
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={contextValue}>
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export const useAppContext = (): AppContextType => {
