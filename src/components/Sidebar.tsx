@@ -7,9 +7,9 @@ import items from '../utils/constants/sidebarItems';
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    navigate('/dashboard');
-  }, [navigate]);
+  // useEffect(() => {
+  //   navigate('/dashboard');
+  // }, [navigate]);
 
   const handleMenuClick = (e: { key: string }) => {
     navigate(`/${e.key}`);

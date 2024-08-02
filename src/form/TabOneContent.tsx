@@ -1,26 +1,38 @@
 import React, { useEffect } from 'react';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styles from '../components/TabsComponent.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 
+/**
+ * Function to check if the string contains only numeric characters
+ */
+const isNumericCheck = (rollNum: string): boolean =>
+  rollNum.split('').every((charac) => !isNaN(Number(charac)) && charac.trim() !== '');
+
+/**
+ * Validation schema using Yup
+ */
+const schema = yup.object().shape({
+  name: yup.string().required('Please enter student name and try again'),
+  roll: yup
+    .string()
+    .required('Please enter a roll no and try again')
+    .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || '')),
+});
+
 type FormFields = {
   name: string;
   roll: string;
 };
 
-const schema = yup.object().shape({
-  name: yup.string().required('Please enter student name and try again'),
-  roll: yup.string().required('Please enter a roll no and try again'),
-});
-
 const TabOneContent: React.FC = () => {
-  const { classes } = useAppContext();
+  const context = useAppContext();
+  console.log(context[0]);
 
-  const currentClass = classes.length > 0 ? classes[0].class : '';
-
+  const [{ currentClass, addStudent }] = useAppContext();
   const {
     handleSubmit,
     control,
@@ -32,10 +44,16 @@ const TabOneContent: React.FC = () => {
 
   useEffect(() => {
     reset();
-  }, [currentClass]);
+  }, [currentClass, reset]);
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      addStudent({ name: data.name, roll_no: data.roll });
+      await message.success('Student has been successfully added');
+      reset();
+    } catch  (error) {
+      await message.error('Failed to add student');
+    }
   };
 
   return (

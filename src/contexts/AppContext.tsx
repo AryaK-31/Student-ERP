@@ -1,36 +1,36 @@
 import React, { createContext, ReactNode, useContext, useState, useMemo } from 'react';
 
-type StudentType = {
-  name: string;
-  roll_no: string;
-};
-
-type ClassType = {
-  class: string;
-  students: StudentType[];
-};
-
-type AppContextType = {
-  classes: ClassType[];
-  setClasses: (classes: ClassType[]) => void;
-};
-
+type AppContextType = Array<{
+  currentClass: string;
+  students: Array<{
+    name: string;
+    roll_no: string;
+  }>;
+  setCurrentClass: (classValue: string) => void;
+  addStudent: (student: { name: string; roll_no: string }) => void;
+}>;
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [classes, setClasses] = useState<ClassType[]>([
-    {
-      class: '4',
-      students: [
-        { name: 'Arya Kaslikar', roll_no: '1' },
-        { name: 'Ajay More', roll_no: '2' },
-      ],
-    },
+  const [currentClass, setCurrentClass] = useState<string>('4');
+  const [students, setStudents] = useState<Array<{ name: string; roll_no: string }>>([
+    { name: 'Arya Kaslikar', roll_no: '1' },
   ]);
 
-  const contextValue = useMemo(
-    () => ({ classes, setClasses }),
-    [classes, setClasses]
+  const addStudent = (student: { name: string; roll_no: string }) => {
+    setStudents((prevStudents) => [...prevStudents, student]);
+  };
+
+  const contextValue: AppContextType = useMemo(
+    () => [
+      {
+        currentClass,
+        students,
+        setCurrentClass,
+        addStudent,
+      },
+    ],
+    [currentClass, students, setCurrentClass, addStudent]
   );
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

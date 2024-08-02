@@ -17,19 +17,13 @@ const items: MenuProps['items'] = allClasses.map((classType) => ({
 }));
 
 const Topbar: React.FC = () => {
-  const appContext = useAppContext();
-  const { classes, setClasses } = appContext;
 
-  const currentClass = classes.length > 0 ? classes[0].class : '';
+  const appContext = useAppContext();
+  const { currentClass, setCurrentClass } = appContext[0]; 
 
   const handleClick: MenuProps['onClick'] = (e) => {
     const selectedClass = e.key;
-
-    const updatedClasses = classes.map((classObj) =>
-      classObj.class === currentClass ? { ...classObj, class: selectedClass } : classObj,
-    );
-
-    setClasses(updatedClasses);
+    setCurrentClass(selectedClass);
   };
 
   return (
