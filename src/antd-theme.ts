@@ -9,7 +9,7 @@ const antdConfigProviderTheme = {
       itemSelectedBg: 'var(--color-secondary)',
       itemHeight: 60,
       itemSelectedColor: 'white',
-    },
+    }
   },
 };
 

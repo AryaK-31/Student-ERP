@@ -14,3 +14,32 @@ body {
   font-family: var(--font-family-base);
 }
 
+.ant-tabs-tab{
+  border-radius: 0 !important ;
+  margin-left: 0;
+  font-weight: 500;
+  border-top : 1px solid black !important;
+  border-left:1px solid black !important;
+  border-right:1px solid black !important;
+  
+  &.ant-tabs-tab{
+    margin-left: 0 !important;
+  }
+}
+
+.ant-tabs-tab-active{
+  background-color: var(--color-secondary) !important;
+  border-bottom: 0 !important;
+
+  .ant-tabs-tab-btn{
+    color: #ffffff !important;
+  }
+}
+
+.ant-dropdown-menu-vertical{
+  border-radius: 0 !important;
+}
+
+.ant-tabs-nav-wrap{
+  border-bottom: 1px solid black !important;
+}

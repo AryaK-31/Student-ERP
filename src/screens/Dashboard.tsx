@@ -3,9 +3,11 @@ import { useAppContext } from '../contexts/AppContext';
 
 const Dashboard: React.FC = () => {
   const appContext = useAppContext();
-  const { currentClass } = appContext;
+  const { classes } = appContext;
 
-  return <div className="dashboardBase">Dashboard you are on {currentClass}</div>;
+  const currentClass = classes.length > 0 ? classes[0].class : '';
+
+  return <div className="dashboardBase">Dashboard: You are on class {currentClass}</div>;
 };
 
 export default Dashboard;
