@@ -1,10 +1,5 @@
 import type { MenuProps } from 'antd';
-
-const customDividerStyle: React.CSSProperties = {
-  borderColor: 'black',
-  margin: 0,
-};
-
+import styles from 'src/components/Sidebar.module.scss';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -16,7 +11,7 @@ const items: MenuItem[] = [
   },
   {
     type: 'divider',
-    style: customDividerStyle,
+    className: styles.customDividerStyle,
   },
   {
     key: 'students',
@@ -24,7 +19,7 @@ const items: MenuItem[] = [
   },
   {
     type: 'divider',
-    style: customDividerStyle,
+    className: styles.customDividerStyle,
   },
   {
     key: 'subjects',
@@ -32,7 +27,7 @@ const items: MenuItem[] = [
   },
   {
     type: 'divider',
-    style: customDividerStyle,
+    className: styles.customDividerStyle,
   },
 ];
 

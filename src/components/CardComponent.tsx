@@ -18,7 +18,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ children }) => {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const classVal = e.currentTarget.innerText;
     setCurrentClass(classVal[0]);
-    navigate('/dashboard');
+    navigate('dashboard');
   };
 
   return (

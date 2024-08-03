@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.scss';
@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
         School ERP
       </header>
       <Menu
-        onClick={(e: { key: string }) => {navigate(`/${e.key}`);}}
+        onClick={({ key }) => {navigate(key);}}
         className={styles.menu}
         selectable
         defaultSelectedKeys={['dashboard']}
