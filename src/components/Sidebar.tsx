@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/dashboard');
+    navigate('dashboard');
   },[]);
 
   return (
