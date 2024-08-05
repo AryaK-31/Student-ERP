@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import styles from './AppLayout.module.scss';
 
+
 const AppLayout: React.FC = () => (
     <div className={styles.layout}>
       <Sidebar />
