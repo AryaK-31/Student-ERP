@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Menu } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.scss';
 import items from '../utils/constants/sidebarItems';
 
@@ -9,7 +9,7 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     navigate('/dashboard');
-  }, []);
+  },[]);
 
   return (
     <div className={styles.leftLayout}>
