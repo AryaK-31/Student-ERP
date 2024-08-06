@@ -5,23 +5,24 @@ type Student = {
   roll_no: string;
 };
 
-type AppContextType = Array<{
-  class: string;
+type AppContextType = {
+  currentClass: string;
   students: Student[];
-}>;
+  setCurrentClass: React.Dispatch<React.SetStateAction<string>>;
+  addStudent: (student: Student) => void;
+};
 
-const AppContext = createContext<
-  | {
-      currentClass: string;
-      students: Student[];
-      setCurrentClass: (classValue: string) => void;
-      addStudent: (student: Student) => void;
-    }
-  | undefined
->(undefined);
+const defaultContextValue: AppContextType = {
+  currentClass: '4',
+  students: [],
+  setCurrentClass: () => {},
+  addStudent: () => {},
+};
+
+const AppContext = createContext<AppContextType>(defaultContextValue);
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [classes, setClasses] = useState<AppContextType>([]);
+  const [classes, setClasses] = useState<Array<{ class: string; students: Student[] }>>([]);
   const [currentClass, setCurrentClass] = useState<string>('4');
 
   const addStudent = (student: Student) => {
@@ -55,7 +56,11 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
   }, [currentClass, classes]);
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={contextValue}>
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export const useAppContext = () => {

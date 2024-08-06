@@ -9,17 +9,16 @@ type CardComponentProps = {
 };
 
 const CardComponent: React.FC<CardComponentProps> = ({ children }) => {
-  const appContext = useAppContext();
-  const { setCurrentClass } = appContext; // Access the first item in the array
+  const { setCurrentClass } = useAppContext();
 
   /** function provided by react-router-dom for navigating to routes without refresh */
   const navigate = useNavigate();
 
   /** onClick Navigates the page to '/dashboard' */
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const classVal = e.currentTarget.innerText.split('')[0]; 
-    setCurrentClass(classVal); 
-    navigate('/dashboard'); 
+    const classVal = e.currentTarget.innerText;
+    setCurrentClass(classVal[0]);
+    navigate('dashboard');
   };
 
   return (

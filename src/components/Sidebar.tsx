@@ -8,22 +8,17 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/dashboard');
-  }, [navigate]);
-
-  const handleMenuClick = (e: { key: string }) => {
-    navigate(`/${e.key}`);
-  };
+    navigate('dashboard');
+  },[]);
 
   return (
     <div className={styles.leftLayout}>
-      <header  className={styles.header}>
-        School ERP
-      </header>
+      <header className={styles.header}>School ERP</header>
       <Menu
-        onClick={handleMenuClick}
+        onClick={({ key }) => {
+          navigate(key);
+        }}
         className={styles.menu}
-        selectable
         defaultSelectedKeys={['dashboard']}
         mode="vertical"
         items={items}

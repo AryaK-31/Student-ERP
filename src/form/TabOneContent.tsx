@@ -19,17 +19,18 @@ type FormFields = {
 
 const TabOneContent: React.FC = () => {
   const { currentClass, addStudent, students } = useAppContext();
-  const context = useAppContext();
 
-  console.log(context);
- 
   const schema = yup.object().shape({
     name: yup.string().required('Please enter student name and try again'),
     roll: yup
       .string()
       .required('Please enter a roll no and try again')
       .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || ''))
-      .test('is-unique', 'Roll number already exists in this class', (value) => (!students.some((student) => student.roll_no === value))),
+      .test(
+        'is-unique',
+        'Roll number already exists in this class',
+        (value) => !students.some((student) => student.roll_no === value),
+      ),
   });
 
   const {
@@ -45,7 +46,7 @@ const TabOneContent: React.FC = () => {
     reset();
   }, [currentClass, reset]);
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit = async (data: FormFields) => {
     try {
       addStudent({ name: data.name, roll_no: data.roll });
       await message.success('Student has been successfully added');
@@ -56,7 +57,8 @@ const TabOneContent: React.FC = () => {
   };
 
   return (
-    <form onSubmit={() => handleSubmit(onSubmit)} className={styles.inputContainer}>
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.inputContainer}>
       <div className={styles.inputContent}>
         <div className={styles.inputLabel}>
           <span className={styles.error}>*</span>
