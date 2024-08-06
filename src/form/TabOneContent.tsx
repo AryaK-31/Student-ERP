@@ -12,27 +12,26 @@ import { useAppContext } from '../contexts/AppContext';
 const isNumericCheck = (rollNum: string): boolean =>
   rollNum.split('').every((charac) => !isNaN(Number(charac)) && charac.trim() !== '');
 
-/**
- * Validation schema using Yup
- */
-const schema = yup.object().shape({
-  name: yup.string().required('Please enter student name and try again'),
-  roll: yup
-    .string()
-    .required('Please enter a roll no and try again')
-    .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || '')),
-});
-
 type FormFields = {
   name: string;
   roll: string;
 };
 
 const TabOneContent: React.FC = () => {
+  const { currentClass, addStudent, students } = useAppContext();
   const context = useAppContext();
-  console.log(context[0]);
 
-  const [{ currentClass, addStudent }] = useAppContext();
+  console.log(context);
+ 
+  const schema = yup.object().shape({
+    name: yup.string().required('Please enter student name and try again'),
+    roll: yup
+      .string()
+      .required('Please enter a roll no and try again')
+      .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || ''))
+      .test('is-unique', 'Roll number already exists in this class', (value) => (!students.some((student) => student.roll_no === value))),
+  });
+
   const {
     handleSubmit,
     control,
@@ -51,7 +50,7 @@ const TabOneContent: React.FC = () => {
       addStudent({ name: data.name, roll_no: data.roll });
       await message.success('Student has been successfully added');
       reset();
-    } catch  (error) {
+    } catch (error) {
       await message.error('Failed to add student');
     }
   };

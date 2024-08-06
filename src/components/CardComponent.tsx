@@ -10,7 +10,7 @@ type CardComponentProps = {
 
 const CardComponent: React.FC<CardComponentProps> = ({ children }) => {
   const appContext = useAppContext();
-  const { currentClass, setCurrentClass } = appContext[0]; // Access the first item in the array
+  const { setCurrentClass } = appContext; // Access the first item in the array
 
   /** function provided by react-router-dom for navigating to routes without refresh */
   const navigate = useNavigate();

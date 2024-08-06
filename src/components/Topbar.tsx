@@ -19,7 +19,7 @@ const items: MenuProps['items'] = allClasses.map((classType) => ({
 const Topbar: React.FC = () => {
 
   const appContext = useAppContext();
-  const { currentClass, setCurrentClass } = appContext[0]; 
+  const { currentClass, setCurrentClass } = appContext; 
 
   const handleClick: MenuProps['onClick'] = (e) => {
     const selectedClass = e.key;
