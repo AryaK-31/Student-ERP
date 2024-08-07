@@ -31,7 +31,6 @@ const AddStudent: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [loading, setLoading] = useState(false);
 
-  // Define the currentClassData here to avoid useEffect dependency issues
   const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
 
   const {
@@ -45,7 +44,7 @@ const AddStudent: React.FC = () => {
       name: '',
       roll: '',
     },
-    context: { currentClassData }, // Pass currentClassData to the schema context
+    context: { currentClassData }
   });
 
   useEffect(() => {
