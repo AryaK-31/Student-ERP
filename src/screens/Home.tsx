@@ -11,7 +11,7 @@ const Home: React.FC = () => (
       <Row justify="center" gutter={[100, 80]} className={styles.customRow}>
         {allClasses.map((classItem) => (
           <Col span={8} key={classItem}>
-            <CardComponent>
+            <CardComponent classKey={String(classItem)}>
               {classItem}
               <sup className={styles.supScript}>th</sup>{' '}
             </CardComponent>

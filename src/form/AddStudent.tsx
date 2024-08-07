@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Input, Button, message } from 'antd';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styles from '../components/TabsComponent.module.scss';
@@ -17,8 +17,8 @@ type FormFields = {
   roll: string;
 };
 
-const TabOneContent: React.FC = () => {
-  const { currentClass, addStudent, students } = useAppContext();
+const AddStudent: React.FC = () => {
+  const { allStudentData, setAllStudentData, currentClass } = useAppContext();
 
   const schema = yup.object().shape({
     name: yup.string().required('Please enter student name and try again'),
@@ -26,11 +26,11 @@ const TabOneContent: React.FC = () => {
       .string()
       .required('Please enter a roll no and try again')
       .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || ''))
-      .test(
-        'is-unique',
-        'Roll number already exists in this class',
-        (value) => !students.some((student) => student.roll_no === value),
-      ),
+      .test('is-unique', 'Roll number already exists in the current class!', (value) => {
+        if (!allStudentData) return true; // If no student data, treat as unique
+        const classToUpdate = allStudentData.find((cls) => cls.currentClass === currentClass);
+        return classToUpdate ? !classToUpdate.students.some((student) => student.roll_no === value) : true;
+      }),
   });
 
   const {
@@ -47,13 +47,37 @@ const TabOneContent: React.FC = () => {
   }, [currentClass, reset]);
 
   const onSubmit = async (data: FormFields) => {
-    try {
-      addStudent({ name: data.name, roll_no: data.roll });
-      await message.success('Student has been successfully added');
-      reset();
-    } catch (error) {
-      await message.error('Failed to add student');
+    let updatedClasses;
+
+    const newClass = {
+      currentClass,
+      students: [{ name: data.name, roll_no: data.roll }],
+    };
+
+    if (!allStudentData || allStudentData.length === 0) {
+      /**  If no class data, create a new class with the new student */
+      updatedClasses = [newClass];
+    } else {
+      const classToUpdate = allStudentData.find((cls) => cls.currentClass === currentClass);
+
+      if (classToUpdate) {
+        /** update existing class */
+        updatedClasses = allStudentData.map((cls) =>
+          cls.currentClass === currentClass
+            ? { ...cls, students: [...cls.students, { name: data.name, roll_no: data.roll }] }
+            : cls,
+        );
+      } else {
+        /** Create a new class with the new student */
+        updatedClasses = [...allStudentData, newClass];
+      }
     }
+
+    setAllStudentData(updatedClasses);
+    await message.success('Student added successfully!');
+
+    // Reset the form after submission
+    reset();
   };
 
   return (
@@ -106,4 +130,4 @@ const TabOneContent: React.FC = () => {
   );
 };
 
-export default TabOneContent;
+export default AddStudent;

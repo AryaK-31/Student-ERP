@@ -22,7 +22,14 @@ const Topbar: React.FC = () => {
   return (
     <div className={styles.menu}>
       <Dropdown
-        menu={{ items, onClick: ({ key }) => {setCurrentClass(key);}, selectable : true, defaultSelectedKeys : [currentClass] }}
+        menu={{
+          items,
+          onClick: ({ key }) => {
+            setCurrentClass(key);
+          },
+          selectable: true,
+          selectedKeys: [currentClass],
+        }}
         trigger={['click']}
       >
         <button type="button" className={styles.menuItem}>
@@ -34,7 +41,6 @@ const Topbar: React.FC = () => {
             <span>
               <DownOutlined />
             </span>
-            
           </Space>
         </button>
       </Dropdown>
