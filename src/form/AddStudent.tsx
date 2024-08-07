@@ -1,37 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { AllStudentsType } from '../utils/types/contextTypes';
 import styles from '../components/TabsComponent.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 
-/**
- * Function to check if the string contains only numeric characters
- */
-const isNumericCheck = (rollNum: string): boolean =>
-  rollNum.split('').every((charac) => !isNaN(Number(charac)) && charac.trim() !== '');
+const schema = yup.object().shape({
+  name: yup.string().required('Please enter student name and try again'),
+  roll: yup
+    .string()
+    .required('Please enter a roll no and try again')
+    .matches(/^\d+$/, 'Roll number must be numeric')
+    .test('is-unique', 'Roll number already exists in the current class!', (value, context) => {
+      const currentClassData = context.options.context? context.options.context.currentClassData as AllStudentsType : null
+      return currentClassData
+        ? !currentClassData.students.some((student) => student.roll_no === value)
+        : true;
+    }),
+});
 
 type FormFields = {
   name: string;
   roll: string;
 };
 
+
 const AddStudent: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
+  const [loading, setLoading] = useState(false);
 
-  const schema = yup.object().shape({
-    name: yup.string().required('Please enter student name and try again'),
-    roll: yup
-      .string()
-      .required('Please enter a roll no and try again')
-      .test('is-numeric', 'Roll number must be numeric', (value) => isNumericCheck(value || ''))
-      .test('is-unique', 'Roll number already exists in the current class!', (value) => {
-        if (!allStudentData) return true; // If no student data, treat as unique
-        const classToUpdate = allStudentData.find((cls) => cls.currentClass === currentClass);
-        return classToUpdate ? !classToUpdate.students.some((student) => student.roll_no === value) : true;
-      }),
-  });
+  // Define the currentClassData here to avoid useEffect dependency issues
+  const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
 
   const {
     handleSubmit,
@@ -40,6 +41,11 @@ const AddStudent: React.FC = () => {
     reset,
   } = useForm<FormFields>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      roll: '',
+    },
+    context: { currentClassData }, // Pass currentClassData to the schema context
   });
 
   useEffect(() => {
@@ -47,37 +53,37 @@ const AddStudent: React.FC = () => {
   }, [currentClass, reset]);
 
   const onSubmit = async (data: FormFields) => {
-    let updatedClasses;
+    setLoading(true);
 
-    const newClass = {
-      currentClass,
-      students: [{ name: data.name, roll_no: data.roll }],
-    };
+    try {
+      const newStudent = { name: data.name, roll_no: data.roll };
 
-    if (!allStudentData || allStudentData.length === 0) {
-      /**  If no class data, create a new class with the new student */
-      updatedClasses = [newClass];
-    } else {
-      const classToUpdate = allStudentData.find((cls) => cls.currentClass === currentClass);
+      if (currentClassData) {
+        const updatedClass = {
+          ...currentClassData,
+          students: [...currentClassData.students, newStudent],
+        };
 
-      if (classToUpdate) {
-        /** update existing class */
-        updatedClasses = allStudentData.map((cls) =>
-          cls.currentClass === currentClass
-            ? { ...cls, students: [...cls.students, { name: data.name, roll_no: data.roll }] }
-            : cls,
-        );
+        setAllStudentData((prevData) => [
+          ...prevData.filter((cls) => cls.currentClass !== currentClass),
+          updatedClass,
+        ]);
       } else {
-        /** Create a new class with the new student */
-        updatedClasses = [...allStudentData, newClass];
+        const newClass = {
+          currentClass,
+          students: [newStudent],
+        };
+
+        setAllStudentData((prevData) => [...prevData, newClass]);
       }
+
+      await message.success('Student added successfully!');
+    } catch (error) {
+      await message.error('Failed to add student.');
+    } finally {
+      setLoading(false);
+      reset();
     }
-
-    setAllStudentData(updatedClasses);
-    await message.success('Student added successfully!');
-
-    // Reset the form after submission
-    reset();
   };
 
   return (
@@ -91,7 +97,6 @@ const AddStudent: React.FC = () => {
         <Controller
           name="name"
           control={control}
-          defaultValue=""
           render={({ field }) => (
             <div className={styles.inputWrapper}>
               <Input {...field} className={styles.inputElement} placeholder="Enter Student Name" />
@@ -110,7 +115,6 @@ const AddStudent: React.FC = () => {
         <Controller
           name="roll"
           control={control}
-          defaultValue=""
           render={({ field }) => (
             <div className={styles.inputWrapper}>
               <Input {...field} className={styles.inputElement} placeholder="Enter Roll No." />
@@ -122,8 +126,8 @@ const AddStudent: React.FC = () => {
         />
       </div>
       <div>
-        <Button htmlType="submit" className={styles.inputButton} type="primary">
-          Add
+        <Button htmlType="submit" className={styles.inputButton} type="primary" loading={loading}>
+          {loading ? 'Adding...' : 'Add'}
         </Button>
       </div>
     </form>

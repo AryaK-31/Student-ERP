@@ -16,12 +16,10 @@ const items: TabsProps['items'] = [
   },
 ];
 
-const onChange = (key: string) => {
-  console.log(key);
-};
+
 
 const TabsComponent: React.FC = () => (
-  <Tabs items={items} onChange={onChange} type="card" defaultActiveKey="tab1" />
+  <Tabs items={items}  type="card" defaultActiveKey="addStudent" />
 );
 
 export default TabsComponent;

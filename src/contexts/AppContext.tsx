@@ -2,8 +2,8 @@ import React, { createContext, ReactNode, useContext, useState, useMemo } from '
 import { AllStudentsType } from 'src/utils/types/contextTypes';
 
 type AppContextType = {
-  allStudentData: AllStudentsType[] | null;
-  setAllStudentData: React.Dispatch<React.SetStateAction<AllStudentsType[] | null>>;
+  allStudentData: AllStudentsType[];
+  setAllStudentData: React.Dispatch<React.SetStateAction<AllStudentsType[]>>;
   currentClass: string;
   setCurrentClass: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -11,12 +11,12 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [allStudentData, setAllStudentData] = useState<AllStudentsType[] | null>(null);
+  const [allStudentData, setAllStudentData] = useState<AllStudentsType[]>([]);
   const [currentClass, setCurrentClass] = useState<string>('4');
 
   const contextValue = useMemo(
     () => ({ allStudentData, setAllStudentData, currentClass, setCurrentClass }),
-    [allStudentData, currentClass, setAllStudentData, setCurrentClass]
+    [allStudentData, currentClass]
   );
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

@@ -16,7 +16,7 @@ const CardComponent: React.FC<CardComponentProps> = ({ children, classKey }) => 
   return (
     <Card
       onClick={() => {
-        setCurrentClass(classKey[0]);
+        setCurrentClass(classKey);
         navigate('dashboard');
       }}
       hoverable
