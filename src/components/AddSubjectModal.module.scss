@@ -1,0 +1,48 @@
+@import '../scss/variable';
+
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .dividor {
+    height: 0.5px;
+    width: 100%;
+    background-color: black;
+  }
+}
+
+.modalContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+
+  .modalTitle {
+    border-top: 1px solid black;
+  }
+
+  .inputElement {
+    width: 30rem;
+    border-radius: 0;
+    border: 2px solid #807f7f;
+
+    &::placeholder {
+      color: #807f7f;
+    }
+  }
+
+  .inputButton {
+    border-radius: 0;
+    width: 0;
+    padding: 1rem 3rem;
+    font-weight: 500;
+    background-color: var(--color-secondary);
+    color: #fff;
+  }
+}

@@ -3,9 +3,11 @@ import { Input, Button, message } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import allCoreSubjects from '../utils/constants/coreSubjects';
 import { AllStudentsType } from '../utils/types/contextTypes';
 import styles from '../components/TabsComponent.module.scss';
 import { useAppContext } from '../contexts/AppContext';
+
 
 const schema = yup.object().shape({
   name: yup.string().required('Please enter student name and try again'),
@@ -14,7 +16,7 @@ const schema = yup.object().shape({
     .required('Please enter a roll no and try again')
     .matches(/^\d+$/, 'Roll number must be numeric')
     .test('is-unique', 'Roll number already exists in the current class!', (value, context) => {
-      const currentClassData = context.options.context? context.options.context.currentClassData as AllStudentsType : null
+      const currentClassData = context.options.context ? context.options.context.currentClassData as AllStudentsType : null;
       return currentClassData
         ? !currentClassData.students.some((student) => student.roll_no === value)
         : true;
@@ -26,9 +28,14 @@ type FormFields = {
   roll: string;
 };
 
+const defaultValues = {
+  name: '',
+  roll: '',
+};
 
 const AddStudent: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
+  // console.log(allStudentData)
   const [loading, setLoading] = useState(false);
 
   const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
@@ -40,22 +47,26 @@ const AddStudent: React.FC = () => {
     reset,
   } = useForm<FormFields>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: '',
-      roll: '',
-    },
+    defaultValues,
     context: { currentClassData }
   });
 
   useEffect(() => {
-    reset();
+    reset(defaultValues);
   }, [currentClass, reset]);
 
   const onSubmit = async (data: FormFields) => {
     setLoading(true);
 
     try {
-      const newStudent = { name: data.name, roll_no: data.roll };
+      const newStudent = {
+        name: data.name,
+        roll_no: data.roll,
+        subjectMarks: allCoreSubjects.map((subject) => ({
+          name: subject,
+          marks: null,
+        })),
+      };
 
       if (currentClassData) {
         const updatedClass = {
@@ -71,6 +82,7 @@ const AddStudent: React.FC = () => {
         const newClass = {
           currentClass,
           students: [newStudent],
+          additionalSubjects: [],
         };
 
         setAllStudentData((prevData) => [...prevData, newClass]);
@@ -81,7 +93,7 @@ const AddStudent: React.FC = () => {
       await message.error('Failed to add student.');
     } finally {
       setLoading(false);
-      reset();
+      reset(defaultValues);
     }
   };
 

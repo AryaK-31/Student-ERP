@@ -1,0 +1,22 @@
+.subjectsBase {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 2rem;
+
+  .coreSubjects{
+    padding: 2rem 0;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    .tagText{
+      font-size: 1.1rem;
+      padding: 0.3rem 1.4rem;
+      font-weight: 500;
+    }
+  }
+}
+

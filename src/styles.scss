@@ -43,3 +43,24 @@ body {
 .ant-tabs-nav-wrap{
   border-bottom: 1px solid black !important;
 }
+
+.ant-modal-content{
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.ant-modal-title{
+  margin-left: 1rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.3rem !important;
+  color: #000 !important;
+  font-weight: 500 !important;
+}
+
+.ant-modal-close{
+  top: 5px !important;
+  color: #000 !important;
+}
+
