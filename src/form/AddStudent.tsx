@@ -33,8 +33,6 @@ const AddStudent: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [loading, setLoading] = useState(false);
 
-  console.log(allStudentData);
-
   const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
 
   const {
@@ -72,8 +70,6 @@ const AddStudent: React.FC = () => {
           updatedClass,
         ]);
 
-        setLoading(false);
-        reset();
       } else {
         const newClass = {
           currentClass,
@@ -84,14 +80,14 @@ const AddStudent: React.FC = () => {
       }
 
       await message.success('Student added successfully!');
+      
+      setLoading(false);
+      reset();
     } catch (error) {
       await message.error('Failed to add student.');
       setLoading(false);
       reset();
     }
-
-    // setLoading(false);
-    // reset();
   };
 
   return (
@@ -135,7 +131,7 @@ const AddStudent: React.FC = () => {
       </div>
       <div>
         <Button htmlType="submit" className={styles.inputButton} type="primary" loading={loading}>
-          {loading ? 'Adding...' : 'Add'}
+          Add
         </Button>
       </div>
     </form>
