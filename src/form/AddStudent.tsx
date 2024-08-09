@@ -13,8 +13,12 @@ const schema = yup.object().shape({
     .string()
     .required('Please enter a roll no and try again')
     .matches(/^\d+$/, 'Roll number must be numeric')
+    .test('min-value', 'Minimum value for this field should be 1', (value) => Number(value) >= 1)
+    .test('max-value', 'Maximum value for this field should be 99', (value) => Number(value) <= 99)
     .test('is-unique', 'Roll number already exists in the current class!', (value, context) => {
-      const currentClassData = context.options.context? context.options.context.currentClassData as AllStudentsType : null
+      const currentClassData = context.options.context
+        ? (context.options.context.currentClassData as AllStudentsType)
+        : null;
       return currentClassData
         ? !currentClassData.students.some((student) => student.roll_no === value)
         : true;
@@ -26,10 +30,11 @@ type FormFields = {
   roll: string;
 };
 
-
 const AddStudent: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [loading, setLoading] = useState(false);
+
+  console.log(allStudentData);
 
   const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
 
@@ -44,7 +49,7 @@ const AddStudent: React.FC = () => {
       name: '',
       roll: '',
     },
-    context: { currentClassData }
+    context: { currentClassData },
   });
 
   useEffect(() => {
@@ -79,10 +84,10 @@ const AddStudent: React.FC = () => {
       await message.success('Student added successfully!');
     } catch (error) {
       await message.error('Failed to add student.');
-    } finally {
-      setLoading(false);
-      reset();
     }
+
+    setLoading(false);
+    reset();
   };
 
   return (

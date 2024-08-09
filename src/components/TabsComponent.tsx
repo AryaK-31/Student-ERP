@@ -1,13 +1,13 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import TabOneContent from '../form/AddStudent';
+import AddStudent from '../form/AddStudent';
 
 const items: TabsProps['items'] = [
   {
     key: 'addStudent',
     label: 'Add Student',
-    children: <TabOneContent />,
+    children: <AddStudent />,
   },
   {
     key: 'addMarks',
