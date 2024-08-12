@@ -1,5 +1,21 @@
 @import '../scss/variable';
 
+.addButton{
+  border-radius: 0;
+  padding: 1.2rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+
+
+  .addIcon{
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
 
 .modalContainer {
   display: flex;
@@ -22,15 +38,17 @@
   margin-bottom: 2.5rem;
   margin-right: 1rem;
   margin-left: 1rem;
-
+  height: 100%;
+  
   .modalTitle {
     border-top: 1px solid black;
   }
 
   .inputElement {
-    width: 30rem;
+    min-width: 20rem;
     border-radius: 0;
     border: 2px solid #807f7f;
+    position: relative;
 
     &::placeholder {
       color: #807f7f;
@@ -40,9 +58,20 @@
   .inputButton {
     border-radius: 0;
     width: 0;
-    padding: 1rem 3rem;
+    padding: 1rem 2.5rem;
     font-weight: 500;
     background-color: var(--color-secondary);
     color: #fff;
   }
+}
+
+.inputWrapper{
+  position: relative;
+}
+
+.errorWrapper{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: red;
 }

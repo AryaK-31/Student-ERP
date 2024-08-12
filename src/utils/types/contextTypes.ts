@@ -3,10 +3,10 @@ export type SubjectMarksType = {
   marks: number | null;
 };
 
-export type AdditionalSubjectsType = {
-  value: string;
+export type SubjectType = {
   label: string;
-};
+  value: string; 
+}
 
 export type StudentType = {
   name: string;
@@ -17,5 +17,5 @@ export type StudentType = {
 export type AllStudentsType = {
   currentClass: string;
   students: StudentType[];
-  additionalSubjects: AdditionalSubjectsType[];
+  additionalSubjects: SubjectType[];
 };
