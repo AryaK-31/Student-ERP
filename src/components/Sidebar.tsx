@@ -7,9 +7,9 @@ import items from '../utils/constants/sidebarItems';
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   navigate('dashboard');
-  // },[]);
+  useEffect(() => {
+    navigate('dashboard');
+  },[]);
 
   return (
     <div className={styles.leftLayout}>
