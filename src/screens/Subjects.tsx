@@ -14,33 +14,34 @@ const Subjects: React.FC = () => {
     (cls) => cls.currentClass === currentClass
   );
 
+  console.log(allStudentData)
+
   const handleDelete = async (subjectValue: string) => {
-    if (!currentClassData) return;
-
     const lowercaseSubjectValue = subjectValue.toLowerCase();
-
+  
     const updatedClassData: AllStudentsType = {
-      ...currentClassData,
-      additionalSubjects: currentClassData.additionalSubjects.filter(
+      ...currentClassData!,
+      additionalSubjects: currentClassData!.additionalSubjects.filter(
         (subject) => subject.value.toLowerCase() !== lowercaseSubjectValue
       ),
-      students: currentClassData.students.map((student) => ({
+      students: currentClassData!.students.map((student) => ({
         ...student,
         subjectMarks: student.subjectMarks.filter(
           (mark) => mark.name.toLowerCase() !== lowercaseSubjectValue
         ),
       })),
     };
-
+  
     const updatedAllStudentData = allStudentData.map((cls) =>
       cls.currentClass === currentClass ? updatedClassData : cls
     );
-
+  
     setAllStudentData(updatedAllStudentData);
     await message.success('Subject has been removed successfully');
   };
+  
 
-  const addedSubjects = currentClassData && currentClassData.additionalSubjects;
+  const additionalSubjects = currentClassData && currentClassData.additionalSubjects;
 
   return (
     <div className={styles.subjectsBase}>
@@ -57,8 +58,8 @@ const Subjects: React.FC = () => {
       <div>
         <SectionHeader headerText="Additional Subjects" />
         <div className={styles.coreSubjects}>
-          {addedSubjects &&
-            addedSubjects.map((subject) => (
+          {additionalSubjects &&
+            additionalSubjects.map((subject) => (
               <div key={subject.value}>
                 <Tag className={styles.tagText}>
                   {subject.label}

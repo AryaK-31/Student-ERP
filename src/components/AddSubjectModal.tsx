@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Input, Modal, message } from 'antd';
+import { Button, Input, message, Modal } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import allCoreSubjects from '../utils/constants/coreSubjects';
 import styles from './AddSubjectModal.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 import { AllStudentsType } from '../utils/types/contextTypes';
 import toSnakeCase from '../utils/helpers/snakeCase';
-import capitalizeFirstWord from '../utils/helpers/upperCase';
+import capitalizeFirstWord from '../utils/helpers/capitalizeFirstWord';
 
 type FormValues = {
   subject: string;
@@ -18,24 +19,28 @@ const schema = yup.object().shape({
   subject: yup
     .string()
     .required('Please enter subject name and try again.')
+    .matches(/^[a-zA-Z\s]+$/, 'Subject must be alphabetic')
     .test('is-unique', 'This subject already exists.', (value, context) => {
       const currentClassData = context.options.context
         ? (context.options.context.currentClassData as AllStudentsType)
         : null;
-      return currentClassData
-        ? !currentClassData.additionalSubjects.some((sub) => sub.value === toSnakeCase(value || ''))
-        : true;
+      const allSubjects = currentClassData
+        ? [
+            ...currentClassData.additionalSubjects.map((sub) => sub.value),
+            ...allCoreSubjects.map((sub) => sub.value),
+          ]
+        : [...allCoreSubjects.map((sub) => sub.value)];
+      return !allSubjects.includes(toSnakeCase(value || ''));
     }),
 });
 
 const AddSubjectModal: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const currentClassData: AllStudentsType | undefined = allStudentData.find(
-    (cls) => cls.currentClass === currentClass,
-  );
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const currentClassData = allStudentData.find((cls) => cls.currentClass === currentClass);
 
   const {
     control,
@@ -50,7 +55,9 @@ const AddSubjectModal: React.FC = () => {
     context: { currentClassData },
   });
 
-  const showModal = () => setIsModalOpen(true);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -59,54 +66,52 @@ const AddSubjectModal: React.FC = () => {
 
   const onSubmit = async (data: FormValues) => {
     const { subject } = data;
-  
+
+    const capitalizedSubject = capitalizeFirstWord(subject);
+
+    const snakeCaseSubject = toSnakeCase(subject);
+
     try {
-      const capitalizedSubject = capitalizeFirstWord(subject);
-  
       if (currentClassData) {
         const updatedClassData: AllStudentsType = {
           ...currentClassData,
           additionalSubjects: [
             ...currentClassData.additionalSubjects,
-            { value: toSnakeCase(subject), label: capitalizedSubject },
+            { value: snakeCaseSubject, label: capitalizedSubject },
           ],
           students: currentClassData.students.map((student) => ({
             ...student,
-            subjectMarks: [
-              ...student.subjectMarks,
-              { name: capitalizedSubject, marks: null }, // Capitalized subject name
-            ],
+            subjectMarks: [...student.subjectMarks, { name: capitalizedSubject, marks: null }],
           })),
         };
-  
+
         const updatedAllStudentData = allStudentData.map((cls) =>
           cls.currentClass === currentClass ? updatedClassData : cls,
         );
-  
+
         setAllStudentData(updatedAllStudentData);
       } else {
         const newClassData: AllStudentsType = {
           currentClass,
           students: [],
-          additionalSubjects: [{ value: toSnakeCase(subject), label: capitalizedSubject }],
+          additionalSubjects: [{ value: snakeCaseSubject, label: capitalizedSubject }],
         };
-  
+
         setAllStudentData([...allStudentData, newClassData]);
       }
-  
-      await message.success('Subject has been added successfully.');
+
+      await messageApi.success({ content: 'Subject has been added successfully.', duration: 1 });
     } catch (error) {
-      await message.error('Failed to add subject.');
+      await messageApi.error({ content: 'Failed to add subject.', duration: 1 });
     }
-  
+
     setIsModalOpen(false);
     reset();
   };
 
-
-
   return (
     <>
+      {contextHolder}
       <Button type="primary" className={styles.addButton} onClick={showModal}>
         <PlusCircleOutlined className={styles.addIcon} />
         <p>Add Subject</p>

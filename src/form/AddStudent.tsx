@@ -6,8 +6,8 @@ import * as yup from 'yup';
 import { AllStudentsType, StudentType, SubjectMarksType } from '../utils/types/contextTypes';
 import styles from '../components/TabsComponent.module.scss';
 import { useAppContext } from '../contexts/AppContext';
-import allCoreSubjects from '../utils/constants/coreSubjects'; // Import core subjects
-import capitalizeFirstWord from '../utils/helpers/upperCase';
+import allCoreSubjects from '../utils/constants/coreSubjects';
+import capitalizeFirstWord from '../utils/helpers/capitalizeFirstWord';
 
 const schema = yup.object().shape({
   name: yup.string().required('Please enter student name and try again'),
@@ -15,7 +15,11 @@ const schema = yup.object().shape({
     .string()
     .required('Please enter a roll no and try again')
     .matches(/^\d+$/, 'Roll number must be numeric')
-    .test('is-valid-range', 'Roll number must be between 1 and 99', (value) => Number(value) >= 1 && Number(value) <= 99)
+    .test(
+      'is-valid-range',
+      'Roll number must be between 1 and 99',
+      (value) => Number(value) >= 1 && Number(value) <= 99,
+    )
     .test('is-unique', 'Roll number already exists in the current class!', (value, context) => {
       const currentClassData = context.options.context
         ? (context.options.context.currentClassData as AllStudentsType)
@@ -59,17 +63,20 @@ const AddStudent: React.FC = () => {
     setLoading(true);
 
     try {
- 
-      const additionalSubjects = currentClassData && currentClassData.additionalSubjects || [];
-      const coreSubjectsWithMarks: SubjectMarksType[] = [
-        ...allCoreSubjects.map((subject) => ({ name: capitalizeFirstWord(subject.label), marks: null })),
-        ...additionalSubjects.map((subject) => ({ name: capitalizeFirstWord(subject.label), marks: null }))
+      const combinedSubjects = [
+        ...allCoreSubjects,
+        ...(currentClassData?.additionalSubjects || []),
       ];
 
-      const newStudent: StudentType = { 
-        name: data.name, 
-        roll_no: data.roll, 
-        subjectMarks: coreSubjectsWithMarks
+      const coreSubjectsWithMarks: Array<SubjectMarksType> = combinedSubjects.map((subject) => ({
+        name: capitalizeFirstWord(subject.label),
+        marks: null,
+      }));
+
+      const newStudent: StudentType = {
+        name: data.name,
+        roll_no: data.roll,
+        subjectMarks: coreSubjectsWithMarks,
       };
 
       if (currentClassData) {
@@ -86,18 +93,18 @@ const AddStudent: React.FC = () => {
         const newClass: AllStudentsType = {
           currentClass,
           students: [newStudent],
-          additionalSubjects: [] 
+          additionalSubjects: [],
         };
 
         setAllStudentData((prevData) => [...prevData, newClass]);
       }
 
-      await message.success('Student added successfully!');
-      
+      await message.success('Student added successfully!', 1.5);
+
       setLoading(false);
       reset();
     } catch (error) {
-      await message.error('Failed to add student.');
+      await message.error('Failed to add student.', 1.5);
       setLoading(false);
     }
   };

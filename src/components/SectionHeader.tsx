@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './SectionHeader.module.scss'
 
 type PropTypes = {
-  headerText : any;
+  headerText : string;
 }
 
 const SectionHeader : React.FC<PropTypes> = ({ headerText }) => (
