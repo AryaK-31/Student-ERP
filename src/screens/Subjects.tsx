@@ -11,29 +11,34 @@ const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
 
   const currentClassData: AllStudentsType | undefined = allStudentData.find(
-    (cls) => cls.currentClass === currentClass
+    (cls) => cls.currentClass === currentClass,
   );
 
   const handleDelete = async (subjectValue: string) => {
     if (!currentClassData) return;
 
-    const lowercaseSubjectValue = subjectValue.toLowerCase();
+    const normalizedSubjectValue = subjectValue.trim().toLowerCase();
+    console.log(`Normalized subject value to delete: "${normalizedSubjectValue}"`);
 
     const updatedClassData: AllStudentsType = {
       ...currentClassData,
-      additionalSubjects: currentClassData.additionalSubjects.filter(
-        (subject) => subject.value.toLowerCase() !== lowercaseSubjectValue
-      ),
+      additionalSubjects: currentClassData.additionalSubjects.filter((subject) => {
+        const normalizedSubject = subject.value.trim().toLowerCase();
+        console.log(`Checking additional subject: "${normalizedSubject}"`);
+        return normalizedSubject !== normalizedSubjectValue;
+      }),
       students: currentClassData.students.map((student) => ({
         ...student,
-        subjectMarks: student.subjectMarks.filter(
-          (mark) => mark.name.toLowerCase() !== lowercaseSubjectValue
-        ),
+        subjectMarks: student.subjectMarks.filter((mark) => {
+          const normalizedMark = mark.name.trim().toLowerCase();
+          console.log(`Checking subject mark: "${normalizedMark}"`);
+          return normalizedMark !== normalizedSubjectValue;
+        }),
       })),
     };
 
     const updatedAllStudentData = allStudentData.map((cls) =>
-      cls.currentClass === currentClass ? updatedClassData : cls
+      cls.currentClass === currentClass ? updatedClassData : cls,
     );
 
     setAllStudentData(updatedAllStudentData);
@@ -69,9 +74,7 @@ const Subjects: React.FC = () => {
                     okText="Yes"
                     cancelText="No"
                   >
-                    <DeleteFilled
-                      style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }}
-                    />
+                    <DeleteFilled style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }} />
                   </Popconfirm>
                 </Tag>
               </div>

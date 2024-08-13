@@ -33,6 +33,8 @@ const AddSubjectModal: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log(allStudentData);
+
   const currentClassData: AllStudentsType | undefined = allStudentData.find(
     (cls) => cls.currentClass === currentClass,
   );
@@ -58,50 +60,50 @@ const AddSubjectModal: React.FC = () => {
   };
 
   const onSubmit = async (data: FormValues) => {
-    const { subject } = data;
-  
-    try {
-      const capitalizedSubject = capitalizeFirstWord(subject);
-  
-      if (currentClassData) {
-        const updatedClassData: AllStudentsType = {
-          ...currentClassData,
-          additionalSubjects: [
-            ...currentClassData.additionalSubjects,
-            { value: toSnakeCase(subject), label: capitalizedSubject },
+  const { subject } = data;
+
+  try {
+    const capitalizedSubject = capitalizeFirstWord(subject);
+
+    if (currentClassData) {
+      const updatedClassData: AllStudentsType = {
+        ...currentClassData,
+        additionalSubjects: [
+          ...currentClassData.additionalSubjects,
+          { value: toSnakeCase(subject), label: capitalizedSubject },
+        ],
+        students: currentClassData.students.map((student) => ({
+          ...student,
+          subjectMarks: [
+            ...student.subjectMarks,
+            { name: capitalizedSubject, marks: null }, // Capitalized subject name
           ],
-          students: currentClassData.students.map((student) => ({
-            ...student,
-            subjectMarks: [
-              ...student.subjectMarks,
-              { name: capitalizedSubject, marks: null }, // Capitalized subject name
-            ],
-          })),
-        };
-  
-        const updatedAllStudentData = allStudentData.map((cls) =>
-          cls.currentClass === currentClass ? updatedClassData : cls,
-        );
-  
-        setAllStudentData(updatedAllStudentData);
-      } else {
-        const newClassData: AllStudentsType = {
-          currentClass,
-          students: [],
-          additionalSubjects: [{ value: toSnakeCase(subject), label: capitalizedSubject }],
-        };
-  
-        setAllStudentData([...allStudentData, newClassData]);
-      }
-  
-      await message.success('Subject has been added successfully.');
-    } catch (error) {
-      await message.error('Failed to add subject.');
+        })),
+      };
+
+      const updatedAllStudentData = allStudentData.map((cls) =>
+        cls.currentClass === currentClass ? updatedClassData : cls,
+      );
+
+      setAllStudentData(updatedAllStudentData);
+    } else {
+      const newClassData: AllStudentsType = {
+        currentClass,
+        students: [],
+        additionalSubjects: [{ value: toSnakeCase(subject), label: capitalizedSubject }],
+      };
+
+      setAllStudentData([...allStudentData, newClassData]);
     }
-  
-    setIsModalOpen(false);
-    reset();
-  };
+
+    await message.success('Subject has been added successfully.');
+  } catch (error) {
+    await message.error('Failed to add subject.');
+  }
+
+  setIsModalOpen(false);
+  reset();
+};
 
 
 

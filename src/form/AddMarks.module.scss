@@ -1,0 +1,41 @@
+.selectBase {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: 2rem 0;
+
+  .selectContainer {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    .inputLabel {
+      font-size: 1.1rem;
+      font-weight: 500;
+      min-width: 9rem;
+    }
+  }
+}
+
+.marksContainer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  .inputLabel {
+    font-size: 1.1rem;
+    font-weight: 500;
+    min-width: 9rem
+  }
+
+  
+
+}
+.addButton {
+  border-radius: 0;
+  width: 0;
+  padding: 1.1rem 3rem;
+  font-weight: 500;
+  background-color: var(--color-secondary);
+}
