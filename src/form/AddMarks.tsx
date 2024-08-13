@@ -12,10 +12,12 @@ const schema = yup.object().shape({
   marks: yup
     .number()
     .required('Please enter valid marks and try again.')
-    .test('between-one-to-hundred', 'Marks should be between 1 to 100', (value) => (
-      value > 0 && value <= 100
-    ))
-    .nullable()
+    .test(
+      'between-one-to-hundred',
+      'Marks should be between 1 to 100',
+      (value) => value > 0 && value < 101,
+    )
+    .nullable(),
 });
 
 type FormValues = {
@@ -27,8 +29,15 @@ const AddMarks: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setValue,
+  } = useForm<FormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
       marks: null,
@@ -60,12 +69,33 @@ const AddMarks: React.FC = () => {
   const handleStudentChange = (value: string) => {
     setSelectedStudent(value);
     setSelectedSubject(null);
-    reset();
+    reset({ marks: null });
+    setIsUpdating(false);
   };
 
   const handleSubjectChange = (value: string) => {
-    setSelectedSubject(value);
-    reset();
+    // setSelectedSubject(value);
+
+    if (selectedStudent && currentClassData) {
+      const student = currentClassData.students.find(
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        (student) => student.roll_no === selectedStudent,
+      );
+      const subjectMark =
+        student &&
+        student.subjectMarks.find(
+          // eslint-disable-next-line @typescript-eslint/no-shadow
+          (subjectMark) => subjectMark.name.toLowerCase() === value.toLowerCase(),
+        );
+
+      if (subjectMark && subjectMark.marks) {
+        setValue('marks', subjectMark.marks);
+        setIsUpdating(true);
+      } else {
+        setValue('marks', null);
+        setIsUpdating(false);
+      }
+    }
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -98,11 +128,17 @@ const AddMarks: React.FC = () => {
 
           setAllStudentData(updatedAllStudentData);
 
-          await message.success('Marks have been added successfully.');
+          await message.success(
+            isUpdating
+              ? 'Marks have been updated successfully.'
+              : 'Marks have been added successfully.',
+          );
+          setSelectedSubject(null);
           reset();
+          setIsUpdating(false);
         }
       } catch (error) {
-        await message.error('Failed to add marks.');
+        await message.error('Failed to update marks.');
       }
 
       setLoading(false);
@@ -118,12 +154,14 @@ const AddMarks: React.FC = () => {
           onChange={handleStudentChange}
           placeholder="Select a Student"
           disabled={false}
+          value={selectedStudent || undefined}
         />
       </div>
       <div className={styles.selectContainer}>
         <h3 className={styles.inputLabel}>Select a Subject:</h3>
         <SelectComponent
           options={subjectOptions}
+          value={selectedSubject || undefined}
           onChange={handleSubjectChange}
           placeholder="Select a Subject"
           disabled={!selectedStudent}
@@ -138,19 +176,19 @@ const AddMarks: React.FC = () => {
               name="marks"
               control={control}
               render={({ field }) => (
-                <>
+                <div className={styles.inputWrapper}>
                   <InputNumber
                     min={0}
                     max={100}
                     placeholder="Enter marks"
-                    style={{ width: '20%', borderRadius: 0 }}
+                    style={{ width: '100%', borderRadius: 0 }}
                     {...field}
                     onChange={(value) => field.onChange(value)}
                   />
                   {errors.marks && (
                     <div className={styles.errorWrapper}>{errors.marks.message}</div>
                   )}
-                </>
+                </div>
               )}
             />
           </div>
@@ -163,7 +201,7 @@ const AddMarks: React.FC = () => {
             disabled={loading}
             style={{ width: '10%' }}
           >
-            Add
+            {isUpdating ? 'Update' : 'Add'}
           </Button>
         </>
       )}

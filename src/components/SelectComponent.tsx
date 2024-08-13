@@ -7,9 +7,10 @@ type SelectComponentProps = {
   onChange: (value: string) => void;
   placeholder: string;
   disabled: boolean;
+  value : string | undefined
 }
 
-const SelectComponent: React.FC<SelectComponentProps> = ({ options, onChange, placeholder, disabled }) => (
+const SelectComponent: React.FC<SelectComponentProps> = ({ options, onChange, placeholder, disabled, value }) => (
   <Space wrap>
     <Select
       style={{ width: 320 }}
@@ -18,6 +19,7 @@ const SelectComponent: React.FC<SelectComponentProps> = ({ options, onChange, pl
       placeholder={placeholder}
       className={styles.inputSelect}
       disabled={disabled} 
+      value={value}
     />
   </Space>
 );
