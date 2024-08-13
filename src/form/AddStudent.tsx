@@ -15,11 +15,7 @@ const schema = yup.object().shape({
     .string()
     .required('Please enter a roll no and try again')
     .matches(/^\d+$/, 'Roll number must be numeric')
-    .test(
-      'is-valid-range',
-      'Roll number must be between 1 and 99',
-      (value) => Number(value) >= 1 && Number(value) <= 99,
-    )
+    .test('is-valid-range', 'Roll number must be between 1 and 99', (value) => Number(value) >= 1 && Number(value) <= 99)
     .test('is-unique', 'Roll number already exists in the current class!', (value, context) => {
       const currentClassData = context.options.context
         ? (context.options.context.currentClassData as AllStudentsType)
@@ -89,6 +85,7 @@ const AddStudent: React.FC = () => {
           ...prevData.filter((cls) => cls.currentClass !== currentClass),
           updatedClass,
         ]);
+
       } else {
         const newClass: AllStudentsType = {
           currentClass,
@@ -99,13 +96,14 @@ const AddStudent: React.FC = () => {
         setAllStudentData((prevData) => [...prevData, newClass]);
       }
 
-      await message.success('Student added successfully!', 1.5);
-
+      await message.success('Student added successfully!');
+      
       setLoading(false);
       reset();
     } catch (error) {
-      await message.error('Failed to add student.', 1.5);
+      await message.error('Failed to add student.');
       setLoading(false);
+      reset();
     }
   };
 
