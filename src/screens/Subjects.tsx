@@ -10,9 +10,9 @@ import { AllStudentsType } from '../utils/types/contextTypes';
 const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
 
-  const currentClassData: AllStudentsType | undefined = allStudentData.find(
+  const currentClassData = allStudentData.find(
     (cls) => cls.currentClass === currentClass,
-  );
+  ) as AllStudentsType;
 
   const handleDelete = async (subjectValue: string) => {
     if (!currentClassData) return;

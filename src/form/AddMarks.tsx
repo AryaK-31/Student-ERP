@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Button, InputNumber, message } from 'antd';
+import { Button, InputNumber, message, Select, Space } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import SelectComponent from '../components/SelectComponent';
 import styles from './AddMarks.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 import allCoreSubjects from '../utils/constants/coreSubjects';
@@ -18,28 +17,34 @@ const schema = yup.object().shape({
       (value) => value > 0 && value < 101,
     )
     .nullable(),
+  student: yup.string().required('Please select a student.'),
+  subject: yup.string().required('Please select a subject.'),
 });
 
 type FormValues = {
+  student: string;
+  subject: string;
   marks: number | null;
 };
 
 const AddMarks: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
-  const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const {
     control,
     handleSubmit,
-    reset,
-    formState: { errors },
     setValue,
+    getValues,
+    reset,
+    watch,
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
+      student: '',
+      subject: '',
       marks: null,
     },
   });
@@ -66,15 +71,19 @@ const AddMarks: React.FC = () => {
       : []),
   ];
 
-  const handleStudentChange = (value: string) => {
-    setSelectedStudent(value);
-    setSelectedSubject(null);
-    reset({ marks: null });
+  const watchStudent = watch('student');
+  const watchSubject = watch('subject');
+
+  const onStudentChange = (value: string) => {
+    setValue('student', value);
+    setValue('subject', '');
+    setValue('marks', null);
     setIsUpdating(false);
   };
 
-  const handleSubjectChange = (value: string) => {
-    // setSelectedSubject(value);
+  const onSubjectChange = (value: string) => {
+    const selectedStudent = getValues('student');
+    setValue('subject', value);
 
     if (selectedStudent && currentClassData) {
       const student = currentClassData.students.find(
@@ -88,7 +97,7 @@ const AddMarks: React.FC = () => {
           (subjectMark) => subjectMark.name.toLowerCase() === value.toLowerCase(),
         );
 
-      if (subjectMark && subjectMark.marks) {
+      if (subjectMark && subjectMark.marks !== null) {
         setValue('marks', subjectMark.marks);
         setIsUpdating(true);
       } else {
@@ -99,76 +108,96 @@ const AddMarks: React.FC = () => {
   };
 
   const onSubmit = async (data: FormValues) => {
-    if (selectedStudent && selectedSubject) {
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        if (currentClassData) {
-          const updatedClassData = {
-            ...currentClassData,
-            students: currentClassData.students.map((student) => {
-              if (student.roll_no === selectedStudent) {
-                return {
-                  ...student,
-                  subjectMarks: student.subjectMarks.map((subjectMark) => {
-                    if (subjectMark.name.toLowerCase() === selectedSubject.toLowerCase()) {
-                      return { ...subjectMark, marks: data.marks };
-                    }
-                    return subjectMark;
-                  }),
-                };
-              }
-              return student;
-            }),
-          };
+    try {
+      if (currentClassData) {
+        const updatedClassData = {
+          ...currentClassData,
+          students: currentClassData.students.map((student) => {
+            if (student.roll_no === data.student) {
+              return {
+                ...student,
+                subjectMarks: student.subjectMarks.map((subjectMark) => {
+                  if (subjectMark.name.toLowerCase() === data.subject.toLowerCase()) {
+                    return { ...subjectMark, marks: data.marks };
+                  }
+                  return subjectMark;
+                }),
+              };
+            }
+            return student;
+          }),
+        };
 
-          const updatedAllStudentData = allStudentData.map((cls) =>
-            cls.currentClass === currentClass ? updatedClassData : cls,
-          );
+        const updatedAllStudentData = allStudentData.map((cls) =>
+          cls.currentClass === currentClass ? updatedClassData : cls,
+        );
 
-          setAllStudentData(updatedAllStudentData);
+        setAllStudentData(updatedAllStudentData);
 
-          await message.success(
-            isUpdating
-              ? 'Marks have been updated successfully.'
-              : 'Marks have been added successfully.',
-          );
-          setSelectedSubject(null);
-          reset();
-          setIsUpdating(false);
-        }
-      } catch (error) {
-        await message.error('Failed to update marks.');
+        await message.success(
+          isUpdating
+            ? 'Marks have been updated successfully.'
+            : 'Marks have been added successfully.',
+        );
+        reset();
+        setIsUpdating(false);
       }
-
-      setLoading(false);
+    } catch (error) {
+      await message.error('Failed to update marks.');
     }
+
+    setLoading(false);
   };
 
   return (
     <div className={styles.selectBase}>
       <div className={styles.selectContainer}>
         <h3 className={styles.inputLabel}>Select a Student:</h3>
-        <SelectComponent
-          options={studentOptions}
-          onChange={handleStudentChange}
-          placeholder="Select a Student"
-          disabled={false}
-          value={selectedStudent || undefined}
-        />
+        <Space wrap>
+          <Controller
+            name="student"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                style={{ width: 320 }}
+                options={studentOptions}
+                placeholder="Select a Student"
+                onChange={onStudentChange}
+                className={styles.inputSelect}
+                value={field.value || undefined}
+              />
+            )}
+          />
+          {errors.student && <div className={styles.errorWrapper}>{errors.student.message}</div>}
+        </Space>
       </div>
       <div className={styles.selectContainer}>
         <h3 className={styles.inputLabel}>Select a Subject:</h3>
-        <SelectComponent
-          options={subjectOptions}
-          value={selectedSubject || undefined}
-          onChange={handleSubjectChange}
-          placeholder="Select a Subject"
-          disabled={!selectedStudent}
-        />
+        <Space wrap>
+          <Controller
+            name="subject"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                style={{ width: 320 }}
+                options={subjectOptions}
+                placeholder="Select a Subject"
+                onChange={onSubjectChange}
+                className={styles.inputSelect}
+                value={field.value || undefined}
+                disabled={!watchStudent}
+              />
+            )}
+          />
+          {errors.subject && <div className={styles.errorWrapper}>{errors.subject.message}</div>}
+        </Space>
       </div>
 
-      {selectedStudent && selectedSubject && (
+      {watchStudent && watchSubject && (
         <>
           <div className={styles.marksContainer}>
             <h3 className={styles.inputLabel}>Enter Marks:</h3>
@@ -201,7 +230,7 @@ const AddMarks: React.FC = () => {
             disabled={loading}
             style={{ width: '10%' }}
           >
-            {isUpdating ? 'Update' : 'Add'}
+           Add
           </Button>
         </>
       )}
