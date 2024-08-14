@@ -93,9 +93,11 @@ const AddStudent: React.FC = () => {
       }
 
       await messageApi.success('Student added successfully!', 1);
+
+      setLoading(false);
+      reset();
     } catch (error) {
       await messageApi.error('Failed to add student.', 1);
-    } finally {
       setLoading(false);
       reset();
     }

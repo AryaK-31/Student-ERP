@@ -24,12 +24,11 @@ const schema = yup.object().shape({
       const currentClassData = context.options.context
         ? (context.options.context.currentClassData as AllStudentsType)
         : null;
+
       const allSubjects = currentClassData
-        ? [
-            ...currentClassData.additionalSubjects.map((sub) => sub.value),
-            ...allCoreSubjects.map((sub) => sub.value),
-          ]
-        : [...allCoreSubjects.map((sub) => sub.value)];
+        ? currentClassData.additionalSubjects.map((sub) => sub.value).concat(allCoreSubjects.map((sub) => sub.value))
+        : allCoreSubjects.map((sub) => sub.value);
+
       return !allSubjects.includes(toSnakeCase(value || ''));
     }),
 });

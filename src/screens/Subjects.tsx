@@ -45,7 +45,7 @@ const Subjects: React.FC = () => {
   return (
     <div className={styles.subjectsBase}>
       {contextHolder}
-      <div>
+      <div className={styles.coreSubjectsWrapper}>
         <SectionHeader headerText="Core Subjects" />
         <div className={styles.coreSubjects}>
           {allCoreSubjects.map((subject) => (
@@ -55,7 +55,7 @@ const Subjects: React.FC = () => {
           ))}
         </div>
       </div>
-      <div>
+      <div className={styles.additionalSubjectsWrapper}>
         <SectionHeader headerText="Additional Subjects" />
         <div className={styles.coreSubjects}>
           {additionalSubjects.length > 0 ? (
@@ -76,7 +76,7 @@ const Subjects: React.FC = () => {
               </Tag>
             ))
           ) : (
-            null
+            <div className={styles.noData}>No Subjects</div>
           )}
         </div>
       </div>
