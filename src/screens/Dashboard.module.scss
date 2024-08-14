@@ -1,0 +1,20 @@
+.dashboardBase{
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 2rem;
+
+  .tableContainer{
+
+    .tableOne{
+      margin-top: 3rem;
+      width: 50vw;
+    }
+    
+    .tableTwo{
+      margin-top: 3rem;
+      width: 70vw;
+    }
+  }
+}

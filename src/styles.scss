@@ -68,3 +68,34 @@ body {
   border-radius: 0 !important;
   border: 2px solid #807f7f !important;
 }
+
+.ant-table-tbody{
+   tr{
+    td {
+      border-left: 1px solid black !important;
+      border-bottom: 1px solid black !important;
+      border-top: 0;
+
+      &:last-child {
+        border-right: 1px solid black !important; 
+      }
+    }
+   }
+}
+
+.ant-table-thead {
+  tr {
+    th {
+      border: 1px solid black !important;
+      border-right: 0px !important; 
+      
+      &:last-child {
+        border-right: 1px solid black !important; 
+      }
+    }
+  }
+}
+
+.ant-table-cell{
+  border : 0 !important ;
+}
