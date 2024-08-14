@@ -9,42 +9,42 @@ import { AllStudentsType } from '../utils/types/contextTypes';
 
 const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const currentClassData: AllStudentsType | undefined = allStudentData.find(
+  const currentClassData = allStudentData.find(
     (cls) => cls.currentClass === currentClass
-  );
-
-  console.log(allStudentData)
+  ) as AllStudentsType ;
 
   const handleDelete = async (subjectValue: string) => {
+
     const lowercaseSubjectValue = subjectValue.toLowerCase();
-  
+
     const updatedClassData: AllStudentsType = {
-      ...currentClassData!,
-      additionalSubjects: currentClassData!.additionalSubjects.filter(
+      ...currentClassData,
+      additionalSubjects: currentClassData.additionalSubjects.filter(
         (subject) => subject.value.toLowerCase() !== lowercaseSubjectValue
       ),
-      students: currentClassData!.students.map((student) => ({
+      students: currentClassData.students.map((student) => ({
         ...student,
         subjectMarks: student.subjectMarks.filter(
           (mark) => mark.name.toLowerCase() !== lowercaseSubjectValue
         ),
       })),
     };
-  
+
     const updatedAllStudentData = allStudentData.map((cls) =>
       cls.currentClass === currentClass ? updatedClassData : cls
     );
-  
-    setAllStudentData(updatedAllStudentData);
-    await message.success('Subject has been removed successfully');
-  };
-  
 
-  const additionalSubjects = currentClassData && currentClassData.additionalSubjects;
+    setAllStudentData(updatedAllStudentData);
+    await messageApi.success('Subject has been removed successfully', 1);
+  };
+
+  const additionalSubjects = currentClassData?.additionalSubjects || [];
 
   return (
     <div className={styles.subjectsBase}>
+      {contextHolder}
       <div>
         <SectionHeader headerText="Core Subjects" />
         <div className={styles.coreSubjects}>
@@ -58,25 +58,26 @@ const Subjects: React.FC = () => {
       <div>
         <SectionHeader headerText="Additional Subjects" />
         <div className={styles.coreSubjects}>
-          {additionalSubjects &&
+          {additionalSubjects.length > 0 ? (
             additionalSubjects.map((subject) => (
-              <div key={subject.value}>
-                <Tag className={styles.tagText}>
-                  {subject.label}
-                  <Popconfirm
-                    title="Are you sure you want to delete this subject?"
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onConfirm={() => handleDelete(subject.value)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <DeleteFilled
-                      style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }}
-                    />
-                  </Popconfirm>
-                </Tag>
-              </div>
-            ))}
+              <Tag key={subject.value} className={styles.tagText}>
+                {subject.label}
+                <Popconfirm
+                  title="Are you sure you want to delete this subject?"
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onConfirm={() => handleDelete(subject.value)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <DeleteFilled
+                    style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }}
+                  />
+                </Popconfirm>
+              </Tag>
+            ))
+          ) : (
+            null
+          )}
         </div>
       </div>
     </div>
