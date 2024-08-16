@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { AllStudentsType, StudentType } from '../utils/types/contextTypes';
-import styles from '../components/TabsComponent.module.scss';
+import styles from './AddStudent.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 import allCoreSubjects from '../utils/constants/coreSubjects';
 import capitalizeFirstWord from '../utils/helpers/capitalizeFirstWord';
@@ -118,6 +118,7 @@ const AddStudent: React.FC = () => {
             control={control}
             render={({ field }) => (
               <div className={styles.inputWrapper}>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input {...field} className={styles.inputElement} placeholder="Enter Student Name" />
                 <div className={styles.errorWrapper}>
                   {errors.name && <div className={styles.error}>{errors.name.message}</div>}
@@ -136,6 +137,7 @@ const AddStudent: React.FC = () => {
             control={control}
             render={({ field }) => (
               <div className={styles.inputWrapper}>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Input {...field} className={styles.inputElement} placeholder="Enter Roll No." />
                 <div className={styles.errorWrapper}>
                   {errors.roll && <div className={styles.error}>{errors.roll.message}</div>}

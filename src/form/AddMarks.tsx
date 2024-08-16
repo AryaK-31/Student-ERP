@@ -31,6 +31,7 @@ const AddMarks: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     control,
@@ -58,26 +59,25 @@ const AddMarks: React.FC = () => {
       }))
     : [];
 
-  const subjectOptions = [
-    ...allCoreSubjects.map((subject) => ({
+  const subjectOptions = allCoreSubjects
+    .map((subject) => ({
       value: subject.value,
       label: subject.label,
-    })),
-    ...(currentClassData
-      ? currentClassData.additionalSubjects.map((subject) => ({
-          value: subject.value,
-          label: subject.label,
-        }))
-      : []),
-  ];
+    }))
+    .concat(
+      currentClassData
+        ? currentClassData.additionalSubjects.map((subject) => ({
+            value: subject.value,
+            label: subject.label,
+          }))
+        : [],
+    );
 
   const watchStudent = watch('student');
   const watchSubject = watch('subject');
 
   const onStudentChange = (value: string) => {
     setValue('student', value);
-    setValue('subject', '');
-    setValue('marks', null);
     setIsUpdating(false);
   };
 
@@ -90,41 +90,37 @@ const AddMarks: React.FC = () => {
         // eslint-disable-next-line @typescript-eslint/no-shadow
         (student) => student.roll_no === selectedStudent,
       );
-      const subjectMark =
-        student &&
-        student.subjectMarks.find(
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          (subjectMark) => subjectMark.name.toLowerCase() === value.toLowerCase(),
-        );
+      const subjectMark = student?.subjectMarks.find(
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        (subjectMark) => subjectMark.name.toLowerCase() === value.toLowerCase(),
+      );
 
-      if (subjectMark && subjectMark.marks !== null) {
-        setValue('marks', subjectMark.marks);
-        setIsUpdating(true);
-      } else {
-        setValue('marks', null);
-        setIsUpdating(false);
-      }
+      setValue('marks', subjectMark?.marks || null);
+      setIsUpdating(!!subjectMark?.marks);
     }
   };
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
 
-    try {
-      if (currentClassData) {
+    if (currentClassData) {
+      try {
         const updatedClassData = {
           ...currentClassData,
           students: currentClassData.students.map((student) => {
             if (student.roll_no === data.student) {
-              return {
-                ...student,
-                subjectMarks: student.subjectMarks.map((subjectMark) => {
-                  if (subjectMark.name.toLowerCase() === data.subject.toLowerCase()) {
-                    return { ...subjectMark, marks: data.marks };
-                  }
-                  return subjectMark;
-                }),
-              };
+              const subjectIndex = student.subjectMarks.findIndex(
+                (subjectMark) => subjectMark.name.toLowerCase() === data.subject.toLowerCase(),
+              );
+
+              if (subjectIndex !== -1) {
+                const updatedSubjectMarks = student.subjectMarks.map((subjectMark, index) =>
+                  index === subjectIndex ? { ...subjectMark, marks: data.marks } : subjectMark,
+                );
+                return { ...student, subjectMarks: updatedSubjectMarks };
+              }
+              const newSubjectMark = { name: data.subject, marks: data.marks };
+              return { ...student, subjectMarks: student.subjectMarks.concat(newSubjectMark) };
             }
             return student;
           }),
@@ -136,16 +132,17 @@ const AddMarks: React.FC = () => {
 
         setAllStudentData(updatedAllStudentData);
 
-        await message.success(
+        await messageApi.success(
           isUpdating
             ? 'Marks have been updated successfully.'
             : 'Marks have been added successfully.',
+          1,
         );
         reset();
         setIsUpdating(false);
+      } catch {
+        await messageApi.error('Failed to update marks.', 1);
       }
-    } catch (error) {
-      await message.error('Failed to update marks.');
     }
 
     setLoading(false);
@@ -153,6 +150,7 @@ const AddMarks: React.FC = () => {
 
   return (
     <div className={styles.selectBase}>
+      {contextHolder}
       <div className={styles.selectContainer}>
         <h3 className={styles.inputLabel}>Select a Student:</h3>
         <Space wrap>
@@ -212,7 +210,6 @@ const AddMarks: React.FC = () => {
                     placeholder="Enter marks"
                     style={{ width: '100%', borderRadius: 0 }}
                     {...field}
-                    onChange={(value) => field.onChange(value)}
                   />
                   {errors.marks && (
                     <div className={styles.errorWrapper}>{errors.marks.message}</div>
@@ -230,7 +227,7 @@ const AddMarks: React.FC = () => {
             disabled={loading}
             style={{ width: '10%' }}
           >
-           Add
+            Add
           </Button>
         </>
       )}

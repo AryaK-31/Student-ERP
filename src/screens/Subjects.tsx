@@ -18,20 +18,17 @@ const Subjects: React.FC = () => {
   const handleDelete = async (subjectValue: string) => {
 
     const normalizedSubjectValue = subjectValue.trim().toLowerCase();
-    console.log(`Normalized subject value to delete: "${normalizedSubjectValue}"`);
 
     const updatedClassData: AllStudentsType = {
       ...currentClassData,
       additionalSubjects: currentClassData.additionalSubjects.filter((subject) => {
         const normalizedSubject = subject.value.trim().toLowerCase();
-        console.log(`Checking additional subject: "${normalizedSubject}"`);
         return normalizedSubject !== normalizedSubjectValue;
       }),
       students: currentClassData.students.map((student) => ({
         ...student,
         subjectMarks: student.subjectMarks.filter((mark) => {
           const normalizedMark = mark.name.trim().toLowerCase();
-          console.log(`Checking subject mark: "${normalizedMark}"`);
           return normalizedMark !== normalizedSubjectValue;
         }),
       })),

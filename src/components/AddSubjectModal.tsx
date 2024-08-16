@@ -134,6 +134,7 @@ const AddSubjectModal: React.FC = () => {
               render={({ field }) => (
                 <div className={styles.inputWrapper}>
                   <Input
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...field}
                     className={styles.inputElement}
                     placeholder="Enter a new subject"
