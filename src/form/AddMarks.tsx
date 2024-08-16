@@ -198,7 +198,7 @@ const AddMarks: React.FC = () => {
       {watchStudent && watchSubject && (
         <>
           <div className={styles.marksContainer}>
-            <h3 className={styles.inputLabel}>Enter Marks:</h3>
+            <h3 className={styles.inputLabel}><span className={styles.inputSpan}>*</span>Enter Marks:</h3>
             <Controller
               name="marks"
               control={control}
