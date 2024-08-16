@@ -9,8 +9,8 @@ const AppLayout: React.FC = () => (
     <div className={styles.layout}>
       <Sidebar />
       <div className={styles.rightLayout}>
-        <Topbar />
-        <Outlet />
+        <div className={styles.topbar}><Topbar /></div>
+        <div className={styles.outlet}><Outlet /></div>
       </div>
     </div>
   );
