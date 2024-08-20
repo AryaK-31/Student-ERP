@@ -71,7 +71,7 @@ const AddStudent: React.FC = () => {
           marks: null,
         })),
       };
-
+      
       if (currentClassData) {
         const updatedClass: AllStudentsType = {
           ...currentClassData,

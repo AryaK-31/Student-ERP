@@ -6,6 +6,7 @@ import SectionHeader from '../components/SectionHeader';
 import styles from './Subjects.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 import { AllStudentsType } from '../utils/types/contextTypes';
+import toSnakeCase from '../utils/helpers/snakeCase';
 
 const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
@@ -15,33 +16,31 @@ const Subjects: React.FC = () => {
     (cls) => cls.currentClass === currentClass
   ) as AllStudentsType ;
 
-  const handleDelete = async (subjectValue: string) => {
+  
+const handleDelete = async (subjectValue: string) => {
 
-    const normalizedSubjectValue = subjectValue.trim().toLowerCase();
-
-    const updatedClassData: AllStudentsType = {
-      ...currentClassData,
-      additionalSubjects: currentClassData.additionalSubjects.filter((subject) => {
-        const normalizedSubject = subject.value.trim().toLowerCase();
-        return normalizedSubject !== normalizedSubjectValue;
+  const updatedClassData: AllStudentsType = {
+    ...currentClassData,
+    additionalSubjects: currentClassData.additionalSubjects.filter((subject) => 
+       subject.value !== subjectValue.trim()
+    ),
+    students: currentClassData.students.map((student) => ({
+      ...student,
+      subjectMarks: student.subjectMarks.filter((subjectMark) => {
+        const subjectMarkValue = toSnakeCase(subjectMark.name);
+        return subjectMarkValue !== subjectValue.trim();
       }),
-      students: currentClassData.students.map((student) => ({
-        ...student,
-        subjectMarks: student.subjectMarks.filter((mark) => {
-          const normalizedMark = mark.name.trim().toLowerCase();
-          return normalizedMark !== normalizedSubjectValue;
-        }),
-      })),
-    };
-
-    const updatedAllStudentData = allStudentData.map((cls) =>
-      cls.currentClass === currentClass ? updatedClassData : cls,
-    );
-
-    setAllStudentData(updatedAllStudentData);
-    await messageApi.success('Subject has been removed successfully', 1);
+    })),
   };
 
+  const updatedAllStudentData = allStudentData.map((cls) =>
+    cls.currentClass === currentClass ? updatedClassData : cls,
+  );
+
+  setAllStudentData(updatedAllStudentData);
+  await messageApi.success('Subject has been removed successfully', 1);
+};
+  
   const additionalSubjects = currentClassData?.additionalSubjects || [];
 
   return (
