@@ -25,7 +25,7 @@ const Subjects: React.FC = () => {
       students: currentClassData.students.map((student) => ({
         ...student,
         subjectMarks: student.subjectMarks.filter(
-          (subjectMark) => toSnakeCase(subjectMark.name) !== subjectValue.trim(),
+          (subjectMark) => toSnakeCase(subjectMark.name) !== subjectValue,
         ),
       })),
     };

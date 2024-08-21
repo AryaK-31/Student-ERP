@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, InputNumber, message, Select, Space } from 'antd';
 import { useForm, Controller, Resolver } from 'react-hook-form';
 import * as yup from 'yup';
@@ -72,6 +72,10 @@ const AddMarks: React.FC = () => {
 
   const watchStudent = watch('student');
   const watchSubject = watch('subject');
+  
+  useEffect(() => {
+    reset(); 
+  }, [currentClass, reset]);
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
@@ -79,14 +83,14 @@ const AddMarks: React.FC = () => {
     if (currentClassData) {
       try {
         /** A flag used to determine if the marks for the subject exists or not */
-        let wasAdded = false;
+        let subjectMarksExists = false; 
         const updatedClassData = {
           ...currentClassData,
           students: currentClassData.students.map((student) => {
             if (student.roll_no === data.student) {
               const updatedSubjectMarks = student.subjectMarks.map((subjectMark) => {
                 if (toSnakeCase(subjectMark.name) === data.subject.toLowerCase()) {
-                  wasAdded = subjectMark.marks === null;
+                  subjectMarksExists = subjectMark.marks === null;
                   return { ...subjectMark, marks: data.marks };
                 }
                 return subjectMark;
@@ -105,7 +109,7 @@ const AddMarks: React.FC = () => {
         setAllStudentData(updatedAllStudentData);
 
         await messageApi.success(
-          wasAdded
+          subjectMarksExists
             ? 'Marks have been added successfully.'
             : 'Marks have been updated successfully.', 1
         );
