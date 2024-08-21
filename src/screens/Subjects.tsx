@@ -12,36 +12,32 @@ const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [messageApi, contextHolder] = message.useMessage();
 
-  console.log(allStudentData);
-  
-
   const currentClassData = allStudentData.find(
-    (cls) => cls.currentClass === currentClass
-  ) as AllStudentsType ;
+    (cls) => cls.currentClass === currentClass,
+  ) as AllStudentsType;
 
-  
   const handleDelete = async (subjectValue: string) => {
     const updatedClassData: AllStudentsType = {
       ...currentClassData,
-      additionalSubjects: currentClassData.additionalSubjects.filter((subject) =>
-        subject.value !== subjectValue
+      additionalSubjects: currentClassData.additionalSubjects.filter(
+        (subject) => subject.value !== subjectValue,
       ),
       students: currentClassData.students.map((student) => ({
         ...student,
-        subjectMarks: student.subjectMarks.filter((subjectMark) =>
-          toSnakeCase(subjectMark.name) !== subjectValue.trim()
+        subjectMarks: student.subjectMarks.filter(
+          (subjectMark) => toSnakeCase(subjectMark.name) !== subjectValue.trim(),
         ),
       })),
     };
-  
+
     const updatedAllStudentData = allStudentData.map((cls) =>
-      cls.currentClass === currentClass ? updatedClassData : cls
+      cls.currentClass === currentClass ? updatedClassData : cls,
     );
-  
+
     setAllStudentData(updatedAllStudentData);
     await messageApi.success('Subject has been removed successfully', 1);
   };
-  
+
   const additionalSubjects = currentClassData?.additionalSubjects || [];
 
   return (
@@ -71,9 +67,7 @@ const Subjects: React.FC = () => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <DeleteFilled
-                    style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }}
-                  />
+                  <DeleteFilled style={{ color: 'red', cursor: 'pointer', marginLeft: 8 }} />
                 </Popconfirm>
               </Tag>
             ))
