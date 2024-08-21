@@ -6,7 +6,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import styles from './AddMarks.module.scss';
 import { useAppContext } from '../contexts/AppContext';
 import allCoreSubjects from '../utils/constants/coreSubjects';
-import capitalizeFirstWord from '../utils/helpers/capitalizeFirstWord';
 import toSnakeCase from '../utils/helpers/snakeCase';
 
 const schema = yup.object().shape({
@@ -14,8 +13,8 @@ const schema = yup.object().shape({
     .number()
     .required('Please enter valid marks and try again.')
     .test(
-      'between-one-to-hundred',
-      'Marks should be between 1 to 100',
+      'between-zero-to-hundred',
+      'Marks should be between 0 to 100',
       (value) => value >= 0 && value <= 100,
     )
     .nullable(),
@@ -36,7 +35,6 @@ const AddMarks: React.FC = () => {
     control,
     handleSubmit,
     setValue,
-    getValues,
     reset,
     watch,
     formState: { errors },
@@ -80,27 +78,19 @@ const AddMarks: React.FC = () => {
 
     if (currentClassData) {
       try {
+        /** A flag used to determine if the marks for the subject exists or not */
+        let wasAdded = false;
         const updatedClassData = {
           ...currentClassData,
           students: currentClassData.students.map((student) => {
             if (student.roll_no === data.student) {
-              const existingMarks = student.subjectMarks.filter(
-                (subjectMark) => toSnakeCase(subjectMark.name) === data.subject.toLowerCase()
-              );
-
-              const updatedSubjectMarks = existingMarks.length > 0
-                ? student.subjectMarks.map((subjectMark) =>
-                    toSnakeCase(subjectMark.name) === data.subject.toLowerCase()
-                      ? { ...subjectMark, marks: data.marks }
-                      : subjectMark
-                  )
-                : student.subjectMarks.concat({
-                    name: data.subject
-                      .split('_')
-                      .map((word) => capitalizeFirstWord(word))
-                      .join(' '),
-                    marks: data.marks,
-                  });
+              const updatedSubjectMarks = student.subjectMarks.map((subjectMark) => {
+                if (toSnakeCase(subjectMark.name) === data.subject.toLowerCase()) {
+                  wasAdded = subjectMark.marks === null;
+                  return { ...subjectMark, marks: data.marks };
+                }
+                return subjectMark;
+              });
 
               return { ...student, subjectMarks: updatedSubjectMarks };
             }
@@ -115,10 +105,9 @@ const AddMarks: React.FC = () => {
         setAllStudentData(updatedAllStudentData);
 
         await messageApi.success(
-          studentOptions.find((s) => s.value === data.student)?.label
-            ? 'Marks have been updated successfully.'
-            : 'Marks have been added successfully.',
-          1,
+          wasAdded
+            ? 'Marks have been added successfully.'
+            : 'Marks have been updated successfully.', 1
         );
         reset();
       } catch {
@@ -173,7 +162,7 @@ const AddMarks: React.FC = () => {
                   onChange={(value) => {
                     field.onChange(value);
                     const student = currentClassData?.students.find(
-                      (studentIndividual) => studentIndividual.roll_no === getValues('student'),
+                      (studentIndividual) => studentIndividual.roll_no === watch('student'),
                     );
                     const subjectMark = student?.subjectMarks.find(
                       (subjectMarkIndividual) =>
