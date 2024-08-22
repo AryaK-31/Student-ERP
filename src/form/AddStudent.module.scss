@@ -1,0 +1,57 @@
+@import '../scss/variable';
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 0;
+  gap: 2.5rem;
+
+  .inputContent {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+
+    .inputLabel{
+      display: flex;
+    }
+
+    p {
+      min-width: 8rem;
+    }
+
+    .inputWrapper {
+      position: relative;
+    }
+
+    .inputElement {
+      width: 20rem;
+      border-radius: 0;
+      border: 2px solid #807f7f;
+
+      &::placeholder {
+        color: #807f7f;
+      }
+    }
+  }
+
+  .inputButton {
+    border-radius: 0;
+    width: 0;
+    padding: 1.1rem 3rem;
+    font-weight: 500;
+  }
+
+  .errorWrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+
+  .error {
+    color: red;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.1px;
+  }
+}

@@ -1,0 +1,25 @@
+@import '../scss/variable';
+
+.menu {
+  height: 8vh;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+
+  .menuItem {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    border: 0;
+    background-color: white;
+
+    span {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+
+}
+

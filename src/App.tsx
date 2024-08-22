@@ -1,22 +1,24 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './screens/Home';
 import Dashboard from './screens/Dashboard';
-
-const router = createBrowserRouter(
-  [
-    {
-      path : '/',
-      element : <Home />
-    },
-    {
-      path : '/dashboard',
-      element : <Dashboard />
-    }
-  ]
-);
+import AppLayout from './layout/AppLayout';
+import Students from './screens/Students';
+import Subjects from './screens/Subjects';
+import AppContextProvider from './contexts/AppContext';
 
 const App = () => (
-    <RouterProvider router={router}/>
+  <AppContextProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route element={<AppLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
+          <Route path="subjects" element={<Subjects />} />
+        </Route>
+      </Routes>
+    </Router>
+  </AppContextProvider>
 );
 
 export default App;

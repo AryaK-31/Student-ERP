@@ -1,0 +1,44 @@
+.subjectsBase {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 2rem;
+  height: 100%;
+
+  .additionalSubjectsWrapper{
+    flex: 1;
+  }
+
+  .coreSubjects{
+    padding: 2rem 0;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    .tagText{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      padding: 0.4rem 2.2rem;
+      font-weight: 500;
+      background-color: #ececec;
+      border: 1px solid black;
+    }
+  }
+}
+
+.noData{
+  font-size: 2rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15rem;
+  margin: 0 auto;
+  color: #a2a1a1;
+}
