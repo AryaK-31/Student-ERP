@@ -133,30 +133,32 @@ const Dashboard: React.FC = () => {
     };
   });
 
-  if (!currentClassData) {
-    return <div className={styles.noData}>No Data</div>;
-  }
-
   return (
     <div className={styles.dashboardBase}>
-      <div className={styles.tableContainer}>
-        <SectionHeader headerText="Student-wise Total Marks" />
-        <Table
-          pagination={false}
-          className={styles.studentTable}
-          columns={studentWiseColumns}
-          dataSource={studentWiseData}
-        />
-      </div>
-      <div className={styles.tableContainer}>
-        <SectionHeader headerText="Subject-wise Average Marks and Top Scorers" />
-        <Table
-          pagination={false}
-          className={styles.subjectTable}
-          columns={subjectWiseColumns}
-          dataSource={subjectWiseData}
-        />
-      </div>
+      {currentClassData ? (
+        <>
+          <div className={styles.tableContainer}>
+            <SectionHeader headerText="Student-wise Total Marks" />
+            <Table
+              pagination={false}
+              className={styles.studentTable}
+              columns={studentWiseColumns}
+              dataSource={studentWiseData}
+            />
+          </div>
+          <div className={styles.tableContainer}>
+            <SectionHeader headerText="Subject-wise Average Marks and Top Scorers" />
+            <Table
+              pagination={false}
+              className={styles.subjectTable}
+              columns={subjectWiseColumns}
+              dataSource={subjectWiseData}
+            />
+          </div>
+        </>
+      ) : (
+        <div className={styles.noData}>No Data</div>
+      )}
     </div>
   );
 };
