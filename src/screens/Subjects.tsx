@@ -12,9 +12,6 @@ const Subjects: React.FC = () => {
   const { allStudentData, setAllStudentData, currentClass } = useAppContext();
   const [messageApi, contextHolder] = message.useMessage();
 
-  console.log(allStudentData);
-  
-
   const currentClassData = allStudentData.find(
     (cls) => cls.currentClass === currentClass,
   ) as AllStudentsType;
