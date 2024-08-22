@@ -36,8 +36,7 @@ const studentWiseColumns: TableProps<StudentWiseTableDataTypes>['columns'] = [
     title: 'Total Marks',
     dataIndex: 'totalMarks',
     key: 'totalMarks',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    render: (text) => (text !== null ? text : '-'),
+    render: (text: number | string) => (text !== null ? text : '-'),
   },
 ];
 
@@ -51,8 +50,7 @@ const subjectWiseColumns: TableProps<SubjectWiseTableDataTypes>['columns'] = [
     title: 'Average Marks',
     dataIndex: 'averageMarks',
     key: 'averageMarks',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    render: (text) => (text !== null ? text : '-'),
+    render: (text: string | number) => (text !== null ? text : '-'),
   },
   {
     title: 'Top Scorer Rank 1',
@@ -79,67 +77,67 @@ const Dashboard: React.FC = () => {
     additionalSubjects: [],
   };
 
-  // Check if there are students in the current class
   const hasStudents = currentClassData.students.length > 0;
 
-  const studentWiseData: StudentWiseTableDataTypes[] = hasStudents
-    ? currentClassData.students.map((student) => {
-        const totalMarks = student.subjectMarks.reduce(
-          (sum, subject) => sum + (subject.marks || 0),
-          0,
-        );
-        return {
-          key: student.roll_no,
-          studentName: student.name || '-',
-          rollNo: student.roll_no || '-',
-          totalMarks: totalMarks || '-',
-        };
-      })
-    : [];
+  const studentWiseData: StudentWiseTableDataTypes[] = currentClassData.students.map((student) => {
+    const totalMarks = student.subjectMarks.reduce((sum, subject) => sum + (subject.marks || 0), 0);
+    return {
+      key: student.roll_no,
+      studentName: student.name || '-',
+      rollNo: student.roll_no || '-',
+      totalMarks: totalMarks || '-',
+    };
+  });
 
-  const allSubjects = [
-    ...new Set(
+  const allSubjects = Array.from(
+    new Set(
       currentClassData.additionalSubjects
-        .map((sub) => sub.value)
+        .map((sub) => sub.label)
         .concat(
           currentClassData.students.flatMap((student) =>
             student.subjectMarks.map((sub) => sub.name),
           ),
         ),
     ),
-  ];
+  );
+  const subjectWiseData: SubjectWiseTableDataTypes[] = allSubjects.map((subjectLabel) => {
+    const marks = currentClassData.students.flatMap((student) =>
+      student.subjectMarks
+        .filter((sub) => sub.name === subjectLabel && sub.marks !== null)
+        .map((sub) => ({ studentName: student.name, marks: sub.marks as number })),
+    );
 
-  const subjectWiseData: SubjectWiseTableDataTypes[] = hasStudents
-    ? allSubjects.map((subject) => {
-        const marks = currentClassData.students.flatMap((student) =>
-          student.subjectMarks
-            .filter((sub) => sub.name === subject)
-            .map((sub) => ({ studentName: student.name, marks: sub.marks || 0 })),
-        );
 
-        const averageMarks =
-          marks.length > 0
-            ? (marks.reduce((sum, mark) => sum + mark.marks, 0) / marks.length).toFixed(2)
-            : '-';
+    if (marks.length === 0) {
+      return {
+        key: subjectLabel,
+        subjectName: subjectLabel,
+        averageMarks: '-',
+        topScorerRank1: '-',
+        topScorerRank2: '-',
+        topScorerRank3: '-',
+      };
+    }
 
-        const sortedMarks = marks.sort((a, b) => b.marks - a.marks);
-        const topScorers = [0, 1, 2].map((rank) => sortedMarks[rank]?.studentName || '-');
+    const totalMarks = marks.reduce((sum, mark) => sum + mark.marks, 0);
+    const averageMarks = Math.round(totalMarks /currentClassData.students.length);
+    const sortedMarks = marks.sort((a, b) => b.marks - a.marks);
+    const topScorers = [0, 1, 2].map((rank) => sortedMarks[rank]?.studentName || '-');
 
-        return {
-          key: subject,
-          subjectName: subject,
-          averageMarks,
-          topScorerRank1: topScorers[0],
-          topScorerRank2: topScorers[1],
-          topScorerRank3: topScorers[2],
-        };
-      })
-    : [];
+    return {
+      key: subjectLabel,
+      subjectName: subjectLabel,
+      averageMarks,
+      topScorerRank1: topScorers[0],
+      topScorerRank2: topScorers[1],
+      topScorerRank3: topScorers[2],
+    };
+  });
 
   return (
-    <div>
+    <div className={styles.dashboardBase}>
       {hasStudents ? (
-        <div className={styles.dashboardBase}>
+        <>
           <div className={styles.tableContainer}>
             <SectionHeader headerText="Student-wise Total Marks" />
             <Table
@@ -158,9 +156,9 @@ const Dashboard: React.FC = () => {
               dataSource={subjectWiseData}
             />
           </div>
-        </div>
+        </>
       ) : (
-        <div>No Data</div>
+        <div className={styles.noData}>No Data</div>
       )}
     </div>
   );

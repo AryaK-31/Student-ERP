@@ -2,7 +2,7 @@ import React from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown, Space } from 'antd';
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
 import allClasses from '../utils/constants/allClasses';
 import styles from './Topbar.module.scss';
 import { useAppContext } from '../contexts/AppContext';

@@ -13,6 +13,7 @@ const antdConfigProviderTheme = {
     Table : {
       headerBg : '#ececec',
       headerBorderRadius : 0,
+      cellPaddingBlock : 10
     }
   },
 };

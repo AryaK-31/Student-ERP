@@ -4,17 +4,28 @@
   flex-direction: column;
   justify-content: start;
   gap: 2rem;
+  height: 100%;
 
   .tableContainer{
 
     .tableOne{
       margin-top: 3rem;
-      width: 50vw;
+      width: 40vw;
     }
     
     .tableTwo{
       margin-top: 3rem;
-      width: 70vw;
+      width: 60vw;
     }
   }
+}
+
+.noData{
+  font-size: 2.5rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #a2a1a1;
+  margin: auto;
 }

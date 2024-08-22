@@ -14,6 +14,7 @@
       font-size: 1.1rem;
       font-weight: 500;
       min-width: 9rem;
+      position: relative;
     }
   }
 }
@@ -49,3 +50,10 @@
     min-width: 200%;
   }
 }
+
+.inputSpan{
+  color : red;
+  position: absolute;
+  right: 100%;
+}
+
