@@ -4,6 +4,7 @@ import type { TableProps } from 'antd';
 import SectionHeader from '../components/SectionHeader';
 import { useAppContext } from '../contexts/AppContext';
 import styles from './Dashboard.module.scss';
+import allCoreSubjects from '../utils/constants/coreSubjects';
 
 type StudentWiseTableDataTypes = {
   key: string;
@@ -76,7 +77,10 @@ const Dashboard: React.FC = () => {
 
   const studentWiseData: StudentWiseTableDataTypes[] = currentClassData
     ? currentClassData.students.map((student) => {
-        const totalMarks = student.subjectMarks.reduce((sum, subject) => sum + (subject.marks || 0), 0);
+        const totalMarks = student.subjectMarks.reduce(
+          (sum, subject) => sum + (subject.marks || 0),
+          0,
+        );
         return {
           key: student.roll_no,
           studentName: student.name || '-',
@@ -86,19 +90,13 @@ const Dashboard: React.FC = () => {
       })
     : [];
 
-  const allSubjects = currentClassData
-    ? Array.from(
-        new Set(
-          currentClassData.additionalSubjects
-            .map((sub) => sub.label)
-            .concat(
-              currentClassData.students.flatMap((student) =>
-                student.subjectMarks.map((sub) => sub.name),
-              ),
-            ),
-        ),
-      )
-    : [];
+  const allSubjects = Array.from(
+    new Set(
+      allCoreSubjects
+        .map((sub) => sub.label)
+        .concat(currentClassData?.additionalSubjects.map((sub) => sub.label) || []),
+    ),
+  );
 
   const subjectWiseData: SubjectWiseTableDataTypes[] = allSubjects.map((subjectLabel) => {
     const marks = currentClassData
